@@ -106,7 +106,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             console.log("JOY: ",recvline); 
             
-            if (!(recvline.dataline) || recvline.dataline=='\n' || recvline.dataline.indexOf("ok") >= 0) {
+            var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
+            var result = status.exec(recvline); 
+            if (result) {
+            
+                $('#' + this.id).append('<div>X:'+ result[0] +' Y:'+ result[1] +'</div>'); 
+            
+            }
+          /*  if (!(recvline.dataline) || recvline.dataline=='\n' || recvline.dataline.indexOf("ok") >= 0) {
                 //console.log("GRBL: got recvline but it's not a dataline, so returning.");
                 return true;
             }
@@ -114,7 +121,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var msg = recvline.dataline;
             msg = msg.replace(/\n/g, ""); 
             $('#' + this.id).append('<div>'+msg+'</div>');   
-        
+        */
             
         },
         btnSetup: function() {
