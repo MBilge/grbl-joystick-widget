@@ -77,6 +77,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             "/com-chilipeppr-widget-serialport/send" : "We send to the serial port certain commands like the initial configuration commands for the GRBL to be in the correct mode and to get initial statuses like planner buffers and XYZ coords. We also send the Emergency Stop and Resume of ! and ~"
         },
         foreignSubscribe: {
+            
             "/com-chilipeppr-widget-serialport/recvline" : "When we get a dataline from serialport, process it and fire off generic CNC controller signals to the /com-chilipeppr-interface-cnccontroller channel.",
             "/com-chilipeppr-widget-serialport/send" : "Subscribe to serial send and override so no other subscriptions receive command."
         },
@@ -92,16 +93,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             this.btnSetup();
             this.forkSetup();
             
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, function (recvline) {
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
                 this.checkRecvLine(recvline);
             });
+            
+            
 
            $('#' + this.id + ' .panel-body').html("");
         },
       
         checkRecvLine: function(recvline){
             
-         
+            console.log("JOY: ",recvline); 
             
             if (!(recvline.dataline) || recvline.dataline=='\n' || recvline.dataline.indexOf("ok") >= 0) {
                 //console.log("GRBL: got recvline but it's not a dataline, so returning.");
