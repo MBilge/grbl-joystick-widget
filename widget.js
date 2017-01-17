@@ -99,12 +99,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             
 
-           $('#' + this.id + ' .panel-body').html("");
+         //  $('#' + this.id + ' .panel-body').html("");
         },
       
         checkRecvLine: function(recvline){
             
             console.log("JOY: ",recvline); 
+            
             
             var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
             var result = status.exec(recvline); 
@@ -113,19 +114,22 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var y = parseInt(result[2]);
                 
                 var cmd = 'G91';
-                var m = '0.1';
+                // var m = '0.1';
+                var m = $("#input-m").val();
+                
+                var range = [470,530]; 
                  
-                if (x < 490){
+                if (x < range[0]){
                     cmd += 'X-'+m;
                 } 
-                else if (x > 520){
+                else if (x > range[1]){
                     cmd += 'X'+ m;
                 }
                 
-                if (y < 490){
+                if (y < range[0]){
                     cmd += 'Y-'+m;
                 }
-                else if ( y > 520){
+                else if ( y > range[1]){
                     cmd += 'Y'+m;
                 }
                 
@@ -134,7 +138,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 
                  chilipeppr.publish("/com-chilipeppr-widget-serialport/send", cmd);
-                 $('#' + this.id).append('<div>X:'+ x +' Y:'+ y +'</div>'); 
+                //  $('#' + this.id).append('<div>X:'+ x +' Y:'+ y +'</div>'); 
             
             }
           /*  if (!(recvline.dataline) || recvline.dataline=='\n' || recvline.dataline.indexOf("ok") >= 0) {
