@@ -109,6 +109,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             }
             
             var msg = recvline.dataline;
+            msg = msg.replace(/\n/g, ""); 
             $('#' + this.id + ' pre').append('<div>'+msg+'</div>');   
         
             
