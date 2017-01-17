@@ -96,7 +96,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.checkRecvLine(recvline);
             });
 
-           $('#' + this.id + ' .panel-body').html("<pre><pre>");
+           $('#' + this.id + ' .panel-body').html("Init<pre><pre>");
         },
       
         checkRecvLine: function(recvline){
