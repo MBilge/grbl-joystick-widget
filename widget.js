@@ -96,7 +96,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.checkRecvLine(recvline);
             });
 
-           $('#' + this.id + ' .panel-body').html("Init<pre><pre>");
+           $('#' + this.id + ' .panel-body').html("");
         },
       
         checkRecvLine: function(recvline){
@@ -110,7 +110,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             var msg = recvline.dataline;
             msg = msg.replace(/\n/g, ""); 
-            $('#' + this.id + ' pre').append('<div>'+msg+'</div>');   
+            $('#' + this.id).append('<div>'+msg+'</div>');   
         
             
         },
