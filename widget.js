@@ -109,8 +109,31 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
             var result = status.exec(recvline); 
             if (result) {
-            
-                $('#' + this.id).append('<div>X:'+ result[0] +' Y:'+ result[1] +'</div>'); 
+                var x = parseInt(result[0]);
+                var y = parseInt(result[1]);
+                
+                var cmd = 'G91';
+                var m = '0.1';
+                 
+                if (x < 490){
+                    cmd += 'X-'+m;
+                } 
+                else if (x > 520){
+                    cmd += 'X'+ m;
+                }
+                
+                if (y < 490){
+                    cmd += 'Y-'+m;
+                }
+                else if ( y > 520){
+                    cmd += 'Y'+m;
+                }
+                
+                cmd += "\n";
+                
+                
+                 chilipeppr.publish("/com-chilipeppr-widget-serialport/send", cmd);
+                // $('#' + this.id).append('<div>X:'+ result[0] +' Y:'+ result[1] +'</div>'); 
             
             }
           /*  if (!(recvline.dataline) || recvline.dataline=='\n' || recvline.dataline.indexOf("ok") >= 0) {
