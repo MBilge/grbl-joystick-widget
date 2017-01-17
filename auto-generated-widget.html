@@ -123,17 +123,24 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             this.btnSetup();
             this.forkSetup();
             
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, function (msg) {
-                this.checkRecvLine(msg);
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, function (recvline) {
+                this.checkRecvLine(recvline);
             });
 
-           $('#' + this.id + ' .panel-body').html("");
+           $('#' + this.id + ' .panel-body').html("<pre><pre>");
         },
       
-        checkRecvLine: function(msg){
+        checkRecvLine: function(recvline){
             
-            $('#' + this.id + ' .panel-body').append('<div>'+msg+'</div>');
-            console.log("JOY: "+msg);
+         
+            
+            if (!(recvline.dataline) || recvline.dataline=='\n' || recvline.dataline.indexOf("ok") >= 0) {
+                //console.log("GRBL: got recvline but it's not a dataline, so returning.");
+                return true;
+            }
+            
+            var msg = recvline.dataline;
+            $('#' + this.id + ' pre').append('<div>'+msg+'</div>');   
         
             
         },
