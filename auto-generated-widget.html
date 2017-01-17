@@ -127,13 +127,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.checkRecvLine(msg);
             });
 
-           
+           $('#' + this.id + ' .panel-body').html("");
         },
       
         checkRecvLine: function(msg){
             
-            $('#' + this.id + '.panel-body').html("").append(msg);
-            
+            $('#' + this.id + ' .panel-body').append('<div>'+msg+'</div>');
+            console.log("JOY: "+msg);
         
             
         },
