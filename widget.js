@@ -139,10 +139,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     var json=$.parseJSON(jsonMsg.D);
                     
                     console.log("JOG: line json ",json); 
-                
-                
-                
-                
+
                     if ('id' in json && json.id == "jog") {
                         
                         
