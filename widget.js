@@ -143,20 +143,17 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         console.log("JOG: got json ", json);
                 */        
                         
-                        
+                        var moves = "";
+                        var range = [470,530]; 
                         var x = result[1];
                         var y = result[2];
-                        
                         var invertX =  $("#invertX").is(':checked') ;
                         var invertY =  $("#invertY").is(':checked') ;
                         
                         
                         var m = $("#joystick-m").val();
                         var feedrate = $("#feedrate-m").val();
-                        
-                        var moves = "";
-                        
-                        var range = [470,530]; 
+                    
                          
                         if (x < range[0]){
                             moves += 'X'+( invertX ? '' : '-' ) + m;
