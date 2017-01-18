@@ -114,20 +114,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
         checkRecvLine: function(recvline){
             
-         //   var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
-          //  var result = status.exec(recvline); 
+            var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
+            var result = status.exec(recvline); 
             
-            
-         
-            //  onBroadcast: function(recvline) {   
-           
-            // console.log("JOG: line received ",recvline); 
-
-            // check if json
-            
-           //  var msg = recvline.dataline;
-           
-           
+            if (!result) return;
+         /*  
             if (recvline.match(/^{/)) {
                 // good. it's json (we think)
                 
@@ -141,12 +132,12 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     console.log("JOG: line json ",json); 
 
                     if ('id' in json && json.id == "jog") {
-                        
-                        
-                        
                         console.log("JOG: got json ", json);
-                        var x = json.x;
-                        var y = json.y;
+                */        
+                        
+                        
+                        var x = result[1];
+                        var y = result[2];
                         
                         var invertX =  $("#invertX").is(':checked') ;
                         var invertY =  $("#invertY").is(':checked') ;
@@ -187,9 +178,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         }
                     
                 
-                    }
-                }
-            }
+         //           }
+         //       }
+         //   }
             
         },
         cancelJog: function(){
