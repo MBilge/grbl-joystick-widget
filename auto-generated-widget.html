@@ -130,9 +130,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             // chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
             
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
-                this.checkRecvLine(recvline);
-            });
+            // chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+                
             
             chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
                 
@@ -143,6 +142,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
          //  $('#' + this.id + ' .panel-body').html("");
         },
 
+        unSubscribeReceive : function(){
+            chilipeppr.unSubscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+        },
+        subscribeReceive : function(){
+         
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);   
+            
+        },
+        
         checkRecvLine: function(recvline){
             
             var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
@@ -254,6 +262,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                this.cancelJog();
             });
 
+            $('#' + this.id + ' .joystick-activate').click(function() {
+               
+               if ($(this).hasClass("active") ){
+                   $(this).removeClass("active");
+                   this.unSubscribeReceive();
+               }
+               else{
+                   $(this).addClass("active");
+                   this.subscribeReveive();
+               }
+                
+            });
             // Init Hello World 2 button on Tab 1. Notice the use
             // of the slick .bind(this) technique to correctly set "this"
             // when the callback is called
@@ -438,10 +458,12 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.9.6</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.9.7</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->
+            <button type="button" class="btn btn-primary joystick-activate">Activate / Deactivate Joystick</button>
+            
             Move by: <input type="text" id="joystick-m" value="1" /> mm <br/>
             FeedRate: <input type="text" id="feedrate-m" value="100" /> G94 units/min <br/>
             <label for="invertX">Invert X</label><input type="checkbox" id="invertX"><br/>

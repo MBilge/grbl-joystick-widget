@@ -99,9 +99,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             // chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
             
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
-                this.checkRecvLine(recvline);
-            });
+            // chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+                
             
             chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
                 
@@ -112,6 +111,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
          //  $('#' + this.id + ' .panel-body').html("");
         },
 
+        unSubscribeReceive : function(){
+            chilipeppr.unSubscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+        },
+        subscribeReceive : function(){
+         
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);   
+            
+        },
+        
         checkRecvLine: function(recvline){
             
             var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
@@ -223,6 +231,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                this.cancelJog();
             });
 
+            $('#' + this.id + ' .joystick-activate').click(function() {
+               
+               if ($(this).hasClass("active") ){
+                   $(this).removeClass("active");
+                   this.unSubscribeReceive();
+               }
+               else{
+                   $(this).addClass("active");
+                   this.subscribeReveive();
+               }
+                
+            });
             // Init Hello World 2 button on Tab 1. Notice the use
             // of the slick .bind(this) technique to correctly set "this"
             // when the callback is called
