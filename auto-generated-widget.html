@@ -220,10 +220,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // jog is in stand-by position
             if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
                 // send only one jog cancel command
-              //  if (!jogCancel){
+               if (!jogCancel){
                     this.cancelJog();
-                //    jogCancel = true;
-            //    }
+                  jogCancel = true;
+               }
             }
             
             
@@ -231,8 +231,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
                 this.jogQueue.push(cmd);
                 this.doQueue();
+                jogCancel = false;
+                
                 // this.sendCode(cmd);
-                // jogCancel = false;
+                
             }
             
         },
@@ -474,7 +476,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v2.0.5</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v2.0.6</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->

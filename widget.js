@@ -189,10 +189,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // jog is in stand-by position
             if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
                 // send only one jog cancel command
-              //  if (!jogCancel){
+               if (!jogCancel){
                     this.cancelJog();
-                //    jogCancel = true;
-            //    }
+                  jogCancel = true;
+               }
             }
             
             
@@ -200,8 +200,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
                 this.jogQueue.push(cmd);
                 this.doQueue();
+                jogCancel = false;
+                
                 // this.sendCode(cmd);
-                // jogCancel = false;
+                
             }
             
         },
