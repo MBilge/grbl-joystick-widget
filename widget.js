@@ -121,7 +121,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
          
             //  onBroadcast: function(recvline) {   
            
-            console.log("JOG: line received ",recvline); 
+            // console.log("JOG: line received ",recvline); 
 
             // check if json
             
@@ -134,13 +134,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 // good. it's json (we think)
                 
                 var jsonMsg = $.parseJSON(recvline);
-
+                console.log("JOG: line jsonMsg ",jsonMsg); 
                 
                 if ('D' in jsonMsg){
                     
                     var json=$.parseJSON(jsonMsg.D);
                     
-                    
+                    console.log("JOG: line json ",json); 
                 
                 
                 
