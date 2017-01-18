@@ -148,6 +148,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (recvline.match(/^{/)) {
                 // good. it's json (we think)
                 var json = $.parseJSON(recvline);
+                console.log("JOG: got json ", json);
                 if ('id' in json && json.id == "jog") {
                     
         
