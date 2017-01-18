@@ -128,11 +128,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             this.forkSetup();
             
             
-            chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
+            // chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
             
-            // chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
-                // this.checkRecvLine(recvline);
-            // });
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
             
             chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
                 
@@ -145,12 +143,12 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
       
         // checkRecvLine: function(recvline){
          
-         onBroadcast: function(msg) {   
-             console.log("JOG: ",msg); 
+         onBroadcast: function(recvline) {   
+             // console.log("JOG: ",msg); 
 
             // check if json
             
-           //  var msg = recvline.dataline;
+            var msg = recvline.dataline;
             
             if (msg.match(/^{/)) {
                 // good. it's json (we think)
