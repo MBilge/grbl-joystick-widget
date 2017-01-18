@@ -145,9 +145,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var y = parseInt(result[2]);
                 
                 var cmd = 'G91';
-                // var m = '0.1';
                 var m = $("#joystick-m").val();
-                
+            
                 var range = [470,530]; 
                  
                 if (x < range[0]){
