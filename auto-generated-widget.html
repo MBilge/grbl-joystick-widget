@@ -108,7 +108,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             "/com-chilipeppr-widget-serialport/send" : "We send to the serial port certain commands like the initial configuration commands for the GRBL to be in the correct mode and to get initial statuses like planner buffers and XYZ coords. We also send the Emergency Stop and Resume of ! and ~"
         },
         foreignSubscribe: {
-            
+            "/com-chilipeppr-interface-cnccontroller/status" : "status check before send commands",
             "/com-chilipeppr-widget-serialport/recvline" : "When we get a dataline from serialport, process it and fire off generic CNC controller signals to the /com-chilipeppr-interface-cnccontroller channel.",
             "/com-chilipeppr-widget-serialport/send" : "Subscribe to serial send and override so no other subscriptions receive command."
         },
@@ -117,6 +117,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
          * All widgets should have an init method. It should be run by the
          * instantiating code like a workspace or a different widget.
          */
+        
+        status : '',
+         
         init: function() {
            
 
@@ -128,6 +131,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.checkRecvLine(recvline);
             });
             
+            chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
+                
+                this.status = status;
+                
+            });
             
 
          //  $('#' + this.id + ' .panel-body').html("");
@@ -164,7 +172,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     moves += 'Y-'+m;
                 }
                 
-                if (moves != ''){
+                if (moves != '' && this.status == 'Idle'){
                     var cmd = 'G91'+moves+'\n';
                     chilipeppr.publish("/com-chilipeppr-widget-serialport/send", cmd);
                 }
