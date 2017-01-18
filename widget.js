@@ -115,7 +115,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         // checkRecvLine: function(recvline){
          
          onBroadcast: function(msg) {   
-            // console.log("JOY: ",recvline); 
+             console.log("JOG: ",msg); 
 
             // check if json
             
