@@ -106,9 +106,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             //    this.status = status;
             //    });
             
-         //    chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
             
-         //  $('#' + this.id + ' .panel-body').html("");
         },
 
         unSubscribeReceive : function(){
@@ -125,7 +124,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (!(recvline.dataline) || recvline.dataline == '\n') {
                 return true;
             }
-            
+          /*  
             var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");
             var result = reg.exec(recvline.dataline);
             if (result){
@@ -133,6 +132,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.availableBuffer = parseInt(result[2]);
                 console.log("JOG: buffer size / queue ", this.availableBuffer, this.jogQueue.length );
             }
+            */
             if(recvline.dataline.substring(0,2) == "ok"){
                 this.doQueue();
             }
@@ -200,13 +200,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
                 if (moves != ''){ //  && this.status == 'Idle'){
                     var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
-                    //this.jogQueue.push(cmd);
-                //    this.doQueue();
-                //    jogCancel = false;
-                    
-                     this.sendCode(cmd);
-                     
-                    
+                    this.jogQueue.push(cmd);
+                    this.doQueue();
+                    // jogCancel = false;
+                    // this.sendCode(cmd);
                 }
             }
         },
