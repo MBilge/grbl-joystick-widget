@@ -106,7 +106,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
             });
             
-
          //  $('#' + this.id + ' .panel-body').html("");
         },
       
