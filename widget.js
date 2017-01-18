@@ -99,7 +99,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             // chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
             
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+             chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
+                this.checkRecvLine(recvline);
+            });
             
             chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
                 
@@ -109,8 +111,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
          //  $('#' + this.id + ' .panel-body').html("");
         },
-    
+
         checkRecvLine: function(recvline){
+            
+         //   var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
+          //  var result = status.exec(recvline); 
+            
+            
          
             //  onBroadcast: function(recvline) {   
             // console.log("JOG: ",msg); 
@@ -124,8 +131,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (recvline.match(/^{/)) {
                 // good. it's json (we think)
                 var msg = recvline;
-                var json = $.parseJSON(msg);
-                console.log("JOG: got json ", json);
+                var jsonM = $.parseJSON(msg);
+                console.log("JOG: got json ", jsonM);
+                
+
+                
                 if ('id' in json && json.id == "jog") {
                     
         
