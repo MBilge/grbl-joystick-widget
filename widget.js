@@ -174,21 +174,23 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var zPlane = $('#'+ this.id +' .z-plane').is(':checked');
             
             
-            $(".bar-x-neg")
-            
             
             $.each(coords,function(i,c){
                 
-                if (zPlane && i == 'x') return true;
+                var axis = i.toUpperCase();
+                if (zPlane) {
+                    axis = 'Z';
+                    if (i == 'x') return true;
+                }
                 
                 if (c.dir < 0-sens){
-                    moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
+                    moves += axis + ( c.reverse ? '' : '-') + increment;
                     
                     $(".bar-"+i+"-neg").width( (100 * Math.abs(c.dir)  / 255) );
                     
                 }
                 else if (c.dir > 0+sens){
-                    moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
+                    moves += axis + ( c.reverse ? '-' : '') + increment;
                     
                     $(".bar-"+i+"-pos").width( (100 * c.dir  / 255) );
                 }
