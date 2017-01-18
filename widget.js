@@ -235,11 +235,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                
                if ($(this).hasClass("active") ){
                    $(this).removeClass("active");
-                   this.unSubscribeReceive();
+                   that.unSubscribeReceive();
                }
                else{
                    $(this).addClass("active");
-                   this.subscribeReveive();
+                   that.subscribeReceive();
                }
                 
             });
