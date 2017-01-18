@@ -92,7 +92,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         init: function() {
            
 
-            this.setupUiFromLocalStorage();
+            // this.setupUiFromLocalStorage();
             this.btnSetup();
             this.forkSetup();
             
@@ -107,6 +107,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             //    });
             
             chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
+            this.hideBody();
             
         },
 
@@ -161,8 +162,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (!result) return;
                   
             var coords = {
-                "x" : { "dir" : result[1] , "reverse" : $("#invertX").is(':checked') },
-                "y" : { "dir" : result[2] , "reverse" : $("#invertY").is(':checked')  },
+                "x" : { "dir" : result[1] , "reverse" : $('#'+ this.id +' .x-reverse').is(':checked') },
+                "y" : { "dir" : result[2] , "reverse" : $('#'+ this.id +' .y-reverse').is(':checked')  },
                 // "z" : { }
             };
           
@@ -210,7 +211,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         cancelJog: function(){
             this.sendCode('\x85'+'\n');
             // we should send also the ~ command?
-             this.sendCode('~'+'\n');
+            this.sendCode('~'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
         },
         sendCode: function(code){
@@ -227,10 +228,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 if ($('#' + that.id + ' .panel-body').hasClass('hidden')) {
                     // it's hidden, unhide
                     that.showBody(evt);
+                    that.subscribeReceive();
                 }
                 else {
                     // hide
                     that.hideBody(evt);
+                     that.unSubscribeReceive();
+                    
                 }
             });
 
@@ -248,48 +252,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                this.cancelJog();
             });
 
-            $('#' + this.id + ' .joystick-activate').click(function() {
-               
-               if ($(this).hasClass("active") ){
-                   $(this).removeClass("active");
-                   that.unSubscribeReceive();
-               }
-               else{
-                   $(this).addClass("active");
-                   that.subscribeReceive();
-               }
-                
-            });
-            // Init Hello World 2 button on Tab 1. Notice the use
-            // of the slick .bind(this) technique to correctly set "this"
-            // when the callback is called
-            $('#' + this.id + ' .btn-helloworld2').click(this.onHelloBtnClick.bind(this));
-
         },
-        /**
-         * onHelloBtnClick is an example of a button click event callback
-         */
-        onHelloBtnClick: function(evt) {
-            console.log("saying hello 2 from btn in tab 1");
-            chilipeppr.publish(
-                '/com-chilipeppr-elem-flashmsg/flashmsg',
-                "Hello 2 Title",
-                "Hello World 2 from Tab 1 from widget " + this.id,
-                2000 /* show for 2 second */
-            );
-        },
-        /**
-         * User options are available in this property for reference by your
-         * methods. If any change is made on these options, please call
-         * saveOptionsLocalStorage()
-         */
-        options: null,
-        /**
-         * Call this method on init to setup the UI by reading the user's
-         * stored settings from localStorage and then adjust the UI to reflect
-         * what the user wants.
-         */
-        setupUiFromLocalStorage: function() {
+       /* setupUiFromLocalStorage: function() {
 
             // Read vals from localStorage. Make sure to use a unique
             // key specific to this widget so as not to overwrite other
@@ -325,7 +289,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.hideBody();
             }
 
-        },
+        },*/
         /**
          * When a user changes a value that is stored as an option setting, you
          * should call this method immediately so that on next load the value
@@ -356,7 +320,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
             if (!(evt == null)) {
                 this.options.showBody = true;
-                this.saveOptionsLocalStorage();
+               // this.saveOptionsLocalStorage();
             }
             // this will send an artificial event letting other widgets know to resize
             // themselves since this widget is now taking up more room since it's showing
@@ -377,7 +341,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
             if (!(evt == null)) {
                 this.options.showBody = false;
-                this.saveOptionsLocalStorage();
+               // this.saveOptionsLocalStorage();
             }
             // this will send an artificial event letting other widgets know to resize
             // themselves since this widget is now taking up less room since it's hiding
