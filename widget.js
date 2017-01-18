@@ -152,39 +152,35 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         jogQueue : [],
         
         jogCancel : false,
+    
         
         checkRecvLine: function(recvline){
             
             var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
             var result = status.exec(recvline); 
-            
             if (!result) return;
                         
             var moves = "";
-            var range = [470,530]; 
-            var x = result[1];
-            var y = result[2];
-            var invertX =  $("#invertX").is(':checked') ;
-            var invertY =  $("#invertY").is(':checked') ;
+            var sens = 10 ; // sensitivity 
+            var increment = $('#'+ this.id +' .increment').val();
+            var feedrate =  $('#'+ this.id +' .feedrate').val();
             
-            
-            var m = $("#joystick-m").val();
-            var feedrate = $("#feedrate-m").val();
-        
-             
-            if (x < range[0]){
-                moves += 'X'+( invertX ? '' : '-' ) + m;
-            } 
-            else if (x > range[1]){
-                moves += 'X' +( invertX ? '-' : '' ) + m;
-            }
-            
-            if (y < range[0]){
-                moves += 'Y'+ ( invertY ? '-' : '') + m;
-            }
-            else if ( y > range[1]){
-                moves += 'Y'+ ( invertY ? '' : '-') +m;
-            }
+            var coords = {
+                "x" : { "dir" : result[1] , "reverse" : $("#invertX").is(':checked') },
+                "y" : { "dir" : result[2] , "reverse" : $("#invertY").is(':checked')  },
+                // "z" : { }
+            };
+    
+            $.each(coords,function(i,c){
+                
+                if (c.dir < 0-sens){
+                    moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
+                }
+                else if (c.dir > 0+sens){
+                    moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
+                }
+                
+            });
         
             // jog is in stand-by position
             if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){

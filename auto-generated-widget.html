@@ -183,39 +183,35 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         jogQueue : [],
         
         jogCancel : false,
+    
         
         checkRecvLine: function(recvline){
             
             var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
             var result = status.exec(recvline); 
-            
             if (!result) return;
                         
             var moves = "";
-            var range = [470,530]; 
-            var x = result[1];
-            var y = result[2];
-            var invertX =  $("#invertX").is(':checked') ;
-            var invertY =  $("#invertY").is(':checked') ;
+            var sens = 10 ; // sensitivity 
+            var increment = $('#'+ this.id +' .increment').val();
+            var feedrate =  $('#'+ this.id +' .feedrate').val();
             
-            
-            var m = $("#joystick-m").val();
-            var feedrate = $("#feedrate-m").val();
-        
-             
-            if (x < range[0]){
-                moves += 'X'+( invertX ? '' : '-' ) + m;
-            } 
-            else if (x > range[1]){
-                moves += 'X' +( invertX ? '-' : '' ) + m;
-            }
-            
-            if (y < range[0]){
-                moves += 'Y'+ ( invertY ? '-' : '') + m;
-            }
-            else if ( y > range[1]){
-                moves += 'Y'+ ( invertY ? '' : '-') +m;
-            }
+            var coords = {
+                "x" : { "dir" : result[1] , "reverse" : $("#invertX").is(':checked') },
+                "y" : { "dir" : result[2] , "reverse" : $("#invertY").is(':checked')  },
+                // "z" : { }
+            };
+    
+            $.each(coords,function(i,c){
+                
+                if (c.dir < 0-sens){
+                    moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
+                }
+                else if (c.dir > 0+sens){
+                    moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
+                }
+                
+            });
         
             // jog is in stand-by position
             if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
@@ -474,14 +470,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.62</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.63</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->
             <button type="button" class="btn btn-primary joystick-activate">Activate / Deactivate Joystick</button>
             
-            Move by: <input type="text" id="joystick-m" value="1" /> mm <br/>
-            FeedRate: <input type="text" id="feedrate-m" value="100" /> G94 units/min <br/>
+            Move by: <input type="text" class="form-control increment" value="10" /> mm <br/>
+            FeedRate: <input type="text" class="form-control feedrate" value="500" /> G94 units/min <br/>
             <label for="invertX">Invert X</label><input type="checkbox" id="invertX"><br/>
             <label for="invertY">Invert Y</label><input type="checkbox" id="invertY">
 
