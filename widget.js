@@ -207,7 +207,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         },
         cancelJog: function(){
             this.sendCode('\x85'+'\n');
-            // we should send also the % command?
+            
+            // we should send also the ~ command?
+            this.sendCode('~'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
         },
         sendCode: function(code){
