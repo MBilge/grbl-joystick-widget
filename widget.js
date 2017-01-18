@@ -184,7 +184,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 if (c.dir < 0-sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
                     
-                    $(".bar-"+i+"-neg").width( (100 * abs(c.dir)  / 255) );
+                    $(".bar-"+i+"-neg").width( (100 * Math.abs(c.dir)  / 255) );
                     
                 }
                 else if (c.dir > 0+sens){
