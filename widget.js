@@ -120,7 +120,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
          
             //  onBroadcast: function(recvline) {   
-            // console.log("JOG: ",msg); 
+            console.log("JOG: line received ",recvline); 
 
             // check if json
             
@@ -131,14 +131,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (recvline.match(/^{/)) {
                 // good. it's json (we think)
                 var msg = recvline;
-                var jsonM = $.parseJSON(msg);
-                console.log("JOG: got json ", jsonM);
-                
+                var json = $.parseJSON(msg);
 
                 
                 if ('id' in json && json.id == "jog") {
                     
-        
+                    
+                    
+                    console.log("JOG: got json ", json);
                     var x = json.x;
                     var y = json.y;
                     
