@@ -171,9 +171,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var sens = 10 ; // sensitivity 
             var increment = $('#'+ this.id +' .increment').val();
             var feedrate =  $('#'+ this.id +' .feedrate').val();
-            
+            var zPlane = $('#'+ this.id +' .z-plane').is(':checked');
             
             $.each(coords,function(i,c){
+                
+                if (zPlane && i == x) return true;
                 
                 if (c.dir < 0-sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
