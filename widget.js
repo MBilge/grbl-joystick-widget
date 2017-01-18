@@ -112,7 +112,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         },
 
         unSubscribeReceive : function(){
-            chilipeppr.unSubscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+            chilipeppr.unsubscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
         },
         subscribeReceive : function(){
          
