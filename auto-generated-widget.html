@@ -127,9 +127,12 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             this.btnSetup();
             this.forkSetup();
             
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
-                this.checkRecvLine(recvline);
-            });
+            
+            chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
+            
+            // chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
+                // this.checkRecvLine(recvline);
+            // });
             
             chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
                 
@@ -140,13 +143,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
          //  $('#' + this.id + ' .panel-body').html("");
         },
       
-        checkRecvLine: function(recvline){
-            
-            console.log("JOY: ",recvline); 
+        // checkRecvLine: function(recvline){
+         
+         onBroadcast: function(msg) {   
+            // console.log("JOY: ",recvline); 
 
             // check if json
             
-            var msg = recvline.dataline;
+           //  var msg = recvline.dataline;
+            
             if (msg.match(/^{/)) {
                 // good. it's json (we think)
                 var json = $.parseJSON(msg);
