@@ -120,6 +120,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var x = parseInt(result[1]);
                 var y = parseInt(result[2]);
                 
+                var invertX =  $("#invertX").is(':checked') ;
+                var invertY =  $("#invertY").is(':checked') ;
+                
                 
                 var m = $("#joystick-m").val();
                 var moves = "";
@@ -127,20 +130,20 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var range = [470,530]; 
                  
                 if (x < range[0]){
-                    moves += 'X-'+m;
+                    moves += 'X'+( invertX ? '' : '-' ) + m;
                 } 
                 else if (x > range[1]){
-                    moves += 'X'+ m;
+                    moves += 'X' ( invertX ? '-' : '' ) + m;
                 }
                 
                 if (y < range[0]){
-                    moves += 'Y'+m;
+                    moves += 'Y'+ ( invertY ? '' : '- ') + m;
                 }
                 else if ( y > range[1]){
-                    moves += 'Y-'+m;
+                    moves += 'Y'+ ( invertY ? '-' : '') +m;
                 }
                 
-                if (moves != '' && this.status == 'Idle'){
+                if (moves != ''){ //  && this.status == 'Idle'){
                     var cmd = 'G91'+moves+'\n';
                     chilipeppr.publish("/com-chilipeppr-widget-serialport/send", cmd);
                 }
