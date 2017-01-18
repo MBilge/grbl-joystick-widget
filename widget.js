@@ -131,7 +131,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (result){
                 // Bf:15,128 // planner buffer - serial rx buffer
                 this.availableBuffer = parseInt(result[2]);
-                console.log("JOG: buffer: ",result, this.availableBuffer);
+                console.log("JOG: buffer size: ", this.availableBuffer);
             }
             if(recvline.dataline.substring(0,2) == "ok"){
                 this.doQueue();
@@ -143,7 +143,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     var cmd = this.jogQueue.shift();
                     this.sendCode(cmd);
                     this.availableBuffer -= cmd.length;
-                    console.log("JOG: send code: ",cmd);
+                    console.log("JOG: send code: ",cmd, cmd.length,  this.availableBuffer );
                 }
             }
         },
