@@ -153,7 +153,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         
         jogCancel : false,
     
-        regexLine : new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i"),
+        regexLine : new RegExp("{x: ([0-9-]+), y: ([0-9-]+)}", "i"),
         
         checkRecvLine: function(recvline){
             
