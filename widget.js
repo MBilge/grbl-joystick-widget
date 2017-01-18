@@ -110,10 +110,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
          //  $('#' + this.id + ' .panel-body').html("");
         },
     
-        // checkRecvLine: function(recvline){
+        checkRecvLine: function(recvline){
          
-         onBroadcast: function(recvline) {   
-             // console.log("JOG: ",msg); 
+            //  onBroadcast: function(recvline) {   
+            // console.log("JOG: ",msg); 
 
             // check if json
             
