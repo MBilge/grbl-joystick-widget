@@ -99,7 +99,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             // chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
             
-             chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, function (recvline) {
                 this.checkRecvLine(recvline);
             });
             
@@ -120,6 +120,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
          
             //  onBroadcast: function(recvline) {   
+           
             console.log("JOG: line received ",recvline); 
 
             // check if json
@@ -127,6 +128,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
            //  var msg = recvline.dataline;
            
            
+            return;
             
             if (recvline.match(/^{/)) {
                 // good. it's json (we think)
