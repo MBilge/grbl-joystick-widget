@@ -139,7 +139,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         },
         doQueue: function(){
             if(this.jogQueue.length > 0){
-                if(this.availableBuffer <= this.jogQueue[0].length){
+                if(this.availableBuffer > this.jogQueue[0].length + 1){
                     var cmd = this.jogQueue.shift();
                     this.sendCode(cmd);
                     this.availableBuffer -= cmd.length;
