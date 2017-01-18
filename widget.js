@@ -167,7 +167,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         // jog is in stand-by position
                         if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
                             
-                            this.sendCode('\x85');
+                            this.cancelJog();
                         }
                         
                         
@@ -184,10 +184,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
         },
         cancelJog: function(){
-            this.sendCode('\x85');
-            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
-            
-            
+            this.sendCode('\x85'+'\n');
+            // we should send also the % command?
+            // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
         },
         sendCode: function(code){
             
