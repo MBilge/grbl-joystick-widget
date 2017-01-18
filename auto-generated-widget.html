@@ -161,8 +161,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var result = reg.exec(recvline.dataline);
             if (result){
                 // Bf:15,128 // planner buffer - serial rx buffer
-                this.availableBuffer = parseInt(result[2], 10);
-                console.log("JOG: buffer: ",this.availableBuffer);
+                this.availableBuffer = parseInt(result[2]);
+                console.log("JOG: buffer: ",result, this.availableBuffer);
             }
             if(recvline.dataline.substring(0,2) == "ok"){
                 this.doQueue();
@@ -472,7 +472,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v2.0</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v2.1</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->

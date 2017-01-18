@@ -130,8 +130,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var result = reg.exec(recvline.dataline);
             if (result){
                 // Bf:15,128 // planner buffer - serial rx buffer
-                this.availableBuffer = parseInt(result[2], 10);
-                console.log("JOG: buffer: ",this.availableBuffer);
+                this.availableBuffer = parseInt(result[2]);
+                console.log("JOG: buffer: ",result, this.availableBuffer);
             }
             if(recvline.dataline.substring(0,2) == "ok"){
                 this.doQueue();
