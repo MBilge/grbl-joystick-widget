@@ -173,21 +173,22 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
     
             $.each(coords,function(i,c){
                 
-                if (c.dir < 0-sens){
+                if (c.dir < -sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
                 }
-                else if (c.dir > 0+sens){
+                else if (c.dir > sens){
                     moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
                 }
+                
                 
             });
         
             // jog is in stand-by position
-            if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
+            if ( coords.x.dir >= -sens && coords.x.dir <= sens && coords.y.dir >= -sens && coords.y.dir <= sens){
                 // send only one jog cancel command
-              // if (!jogCancel){
+                // if (!jogCancel){
                     this.cancelJog();
-            //      jogCancel = true;
+                //  jogCancel = true;
                //}
             }
             
