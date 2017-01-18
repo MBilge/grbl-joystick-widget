@@ -128,8 +128,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
            //  var msg = recvline.dataline;
            
            
-            return;
-            
             if (recvline.match(/^{/)) {
                 // good. it's json (we think)
                 
