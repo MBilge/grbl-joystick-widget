@@ -6,8 +6,8 @@ char id[] = "jog";
 
 // default delay for sending messages
 int d; 
-int normalDelay = 100;
-int sleepDelay = 1000;
+int normalDelay = 250;
+int sleepDelay = 60 * 1000; // send message every x seconds
 
 // range for sensitivity
 int range[] = {500, 520};
@@ -42,10 +42,10 @@ void loop() {
 void Send(){
 
    if (sleeping){
-    if (millis() - lastSent  > sleepDelay){
-        sendJson();
-        lastSent = millis();
-    } 
+    //if (millis() - lastSent  > sleepDelay){
+    //    sendJson();
+    //    lastSent = millis();
+    //} 
   }
   else{
     if (millis() - lastSent  > normalDelay){
@@ -59,7 +59,7 @@ void checkInputs(){
   if (x > range[0] && x < range[1] && y > range[0] && y < range[1]){
       // we are in stand-by mode
       // waiting x3 normalDelay before going in sleep mode
-      if ( millis() - lastCommand  > normalDelay * 3){
+      if ( millis() - lastCommand  > normalDelay * 2){
         sleeping = true;
       }
   }
@@ -86,5 +86,15 @@ void readInputs(){
   
 }
 void sendJson(){
-  Serial.println("{id: '"+String(id)+"', x: " + String(x) + ", y: "+ String(y) +"}");  
+
+  
+  
+  
+  // Serial.println( String("{\"Cmd\": \"Broadcast\", \"Msg\": {\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}}"));  
+
+//   Serial.println( String("broadcast {\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}"));  
+
+  // Serial.println( String("{\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}"));  
+
+  Serial.println("{x: "+ String(x) + ", y: "+ String(y) + "}");  
 }
