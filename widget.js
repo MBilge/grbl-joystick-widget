@@ -153,11 +153,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         
         jogCancel : false,
     
+        regexLine : new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i"),
         
         checkRecvLine: function(recvline){
             
-            var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
-            var result = status.exec(recvline); 
+            var result = this.regexLine.exec(recvline); 
             if (!result) return;
                         
             var moves = "";
@@ -173,18 +173,20 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
     
             $.each(coords,function(i,c){
                 
-                if (c.dir < -sens){
+                if (c.dir < 0-sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
                 }
-                else if (c.dir > sens){
+                else if (c.dir > 0+sens){
                     moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
                 }
                 
                 
             });
         
+            console.log('JOG: moves: ',moves);
+            
             // jog is in stand-by position
-            if ( coords.x.dir >= -sens && coords.x.dir <= sens && coords.y.dir >= -sens && coords.y.dir <= sens){
+            if ( coords.x.dir >= 0-sens && coords.x.dir <= sens && coords.y.dir >= 0-sens && coords.y.dir <= sens){
                 // send only one jog cancel command
                 // if (!jogCancel){
                     this.cancelJog();
@@ -200,6 +202,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             //    jogCancel = false;
                 
                  this.sendCode(cmd);
+                 
                 
             }
             

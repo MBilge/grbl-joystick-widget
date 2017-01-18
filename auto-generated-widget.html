@@ -184,11 +184,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         
         jogCancel : false,
     
+        regexLine : new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i"),
         
         checkRecvLine: function(recvline){
             
-            var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
-            var result = status.exec(recvline); 
+            var result = this.regexLine.exec(recvline); 
             if (!result) return;
                         
             var moves = "";
@@ -204,18 +204,20 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
     
             $.each(coords,function(i,c){
                 
-                if (c.dir < -sens){
+                if (c.dir < 0-sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
                 }
-                else if (c.dir > sens){
+                else if (c.dir > 0+sens){
                     moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
                 }
                 
                 
             });
         
+            console.log('JOG: moves: ',moves);
+            
             // jog is in stand-by position
-            if ( coords.x.dir >= -sens && coords.x.dir <= sens && coords.y.dir >= -sens && coords.y.dir <= sens){
+            if ( coords.x.dir >= 0-sens && coords.x.dir <= sens && coords.y.dir >= 0-sens && coords.y.dir <= sens){
                 // send only one jog cancel command
                 // if (!jogCancel){
                     this.cancelJog();
@@ -231,6 +233,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             //    jogCancel = false;
                 
                  this.sendCode(cmd);
+                 
                 
             }
             
@@ -471,7 +474,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.64</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.65</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->
