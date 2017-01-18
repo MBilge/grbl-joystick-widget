@@ -253,98 +253,22 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             });
 
         },
-       /* setupUiFromLocalStorage: function() {
-
-            // Read vals from localStorage. Make sure to use a unique
-            // key specific to this widget so as not to overwrite other
-            // widgets' options. By using this.id as the prefix of the
-            // key we're safe that this will be unique.
-
-            // Feel free to add your own keys inside the options 
-            // object for your own items
-
-            var options = localStorage.getItem(this.id + '-options');
-
-            if (options) {
-                options = $.parseJSON(options);
-                console.log("just evaled options: ", options);
-            }
-            else {
-                options = {
-                    showBody: true,
-                    tabShowing: 1,
-                    customParam1: null,
-                    customParam2: 1.0
-                };
-            }
-
-            this.options = options;
-            console.log("options:", options);
-
-            // show/hide body
-            if (options.showBody) {
-                this.showBody();
-            }
-            else {
-                this.hideBody();
-            }
-
-        },*/
-        /**
-         * When a user changes a value that is stored as an option setting, you
-         * should call this method immediately so that on next load the value
-         * is correctly set.
-         */
-        saveOptionsLocalStorage: function() {
-            // You can add your own values to this.options to store them
-            // along with some of the normal stuff like showBody
-            var options = this.options;
-
-            var optionsStr = JSON.stringify(options);
-            console.log("saving options:", options, "json.stringify:", optionsStr);
-            // store settings to localStorage
-            localStorage.setItem(this.id + '-options', optionsStr);
-        },
-        /**
-         * Show the body of the panel.
-         * @param {jquery_event} evt - If you pass the event parameter in, we 
-         * know it was clicked by the user and thus we store it for the next 
-         * load so we can reset the user's preference. If you don't pass this 
-         * value in we don't store the preference because it was likely code 
-         * that sent in the param.
-         */
+      
         showBody: function(evt) {
             $('#' + this.id + ' .panel-body').removeClass('hidden');
             $('#' + this.id + ' .panel-footer').removeClass('hidden');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
-            if (!(evt == null)) {
-                this.options.showBody = true;
-               // this.saveOptionsLocalStorage();
-            }
-            // this will send an artificial event letting other widgets know to resize
-            // themselves since this widget is now taking up more room since it's showing
+         
             $(window).trigger("resize");
         },
-        /**
-         * Hide the body of the panel.
-         * @param {jquery_event} evt - If you pass the event parameter in, we 
-         * know it was clicked by the user and thus we store it for the next 
-         * load so we can reset the user's preference. If you don't pass this 
-         * value in we don't store the preference because it was likely code 
-         * that sent in the param.
-         */
+     
         hideBody: function(evt) {
             $('#' + this.id + ' .panel-body').addClass('hidden');
             $('#' + this.id + ' .panel-footer').addClass('hidden');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
-            if (!(evt == null)) {
-                this.options.showBody = false;
-               // this.saveOptionsLocalStorage();
-            }
-            // this will send an artificial event letting other widgets know to resize
-            // themselves since this widget is now taking up less room since it's hiding
+           
             $(window).trigger("resize");
         },
         /**
