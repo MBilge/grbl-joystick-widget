@@ -157,11 +157,12 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 return true;
             }
             
-            var reg = new RegExp("\|Bf:([0-9]+),([0-9]+)\|");
+            var reg = new RegExp("\|Bf:([0-9]+),([0-9]+)\|","i");
             var result = reg.exec(recvline.dataline);
             if (result){
                 // Bf:15,128 // planner buffer - serial rx buffer
-                this.availableBuffer = parseInt(result[1], 10);
+                this.availableBuffer = parseInt(result[2], 10);
+                console.log("JOG: buffer: ",this.availableBuffer);
             }
             if(recvline.dataline.substring(0,2) == "ok"){
                 this.doQueue();
@@ -169,10 +170,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         },
         doQueue: function(){
             if(this.jogQueue.length > 0){
-                if(this.availableBuffer > this.jogQueue[0].length + 1){
+                if(this.availableBuffer <= this.jogQueue[0].length){
                     var cmd = this.jogQueue.shift();
                     this.sendCode(cmd);
                     this.availableBuffer -= cmd.length;
+                    console.log("JOG: send code: ",cmd);
                 }
             }
         },
