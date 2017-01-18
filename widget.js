@@ -106,7 +106,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             //    this.status = status;
             //    });
             
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
+         //    chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
             
          //  $('#' + this.id + ' .panel-body').html("");
         },
@@ -189,20 +189,20 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // jog is in stand-by position
             if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
                 // send only one jog cancel command
-               if (!jogCancel){
+              // if (!jogCancel){
                     this.cancelJog();
-                  jogCancel = true;
-               }
+            //      jogCancel = true;
+               //}
             }
             
             
             if (moves != ''){ //  && this.status == 'Idle'){
                 var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
-                this.jogQueue.push(cmd);
-                this.doQueue();
-                jogCancel = false;
+                //this.jogQueue.push(cmd);
+            //    this.doQueue();
+            //    jogCancel = false;
                 
-                // this.sendCode(cmd);
+                 this.sendCode(cmd);
                 
             }
             
@@ -211,7 +211,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             this.sendCode('\x85'+'\n');
             
             // we should send also the ~ command?
-            this.sendCode('~'+'\n');
+           //  this.sendCode('~'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
         },
         sendCode: function(code){
