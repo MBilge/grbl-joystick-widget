@@ -159,18 +159,19 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             var result = this.regexLine.exec(recvline); 
             if (!result) return;
-                        
-            var moves = "";
-            var sens = 10 ; // sensitivity 
-            var increment = $('#'+ this.id +' .increment').val();
-            var feedrate =  $('#'+ this.id +' .feedrate').val();
-            
+                  
             var coords = {
                 "x" : { "dir" : result[1] , "reverse" : $("#invertX").is(':checked') },
                 "y" : { "dir" : result[2] , "reverse" : $("#invertY").is(':checked')  },
                 // "z" : { }
             };
-    
+          
+            var moves = "";
+            var sens = 10 ; // sensitivity 
+            var increment = $('#'+ this.id +' .increment').val();
+            var feedrate =  $('#'+ this.id +' .feedrate').val();
+            
+            
             $.each(coords,function(i,c){
                 
                 if (c.dir < 0-sens){
@@ -180,10 +181,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
                 }
                 
+                console.log("JOG: moves", moves);
                 
             });
         
-            console.log('JOG: moves: ',moves);
+            // console.log('JOG: moves: ',moves);
             
             // jog is in stand-by position
             if ( coords.x.dir >= 0-sens && coords.x.dir <= sens && coords.y.dir >= 0-sens && coords.y.dir <= sens){
@@ -194,18 +196,19 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                //}
             }
             
+            else{
             
-            if (moves != ''){ //  && this.status == 'Idle'){
-                var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
-                //this.jogQueue.push(cmd);
-            //    this.doQueue();
-            //    jogCancel = false;
-                
-                 this.sendCode(cmd);
-                 
-                
+                if (moves != ''){ //  && this.status == 'Idle'){
+                    var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
+                    //this.jogQueue.push(cmd);
+                //    this.doQueue();
+                //    jogCancel = false;
+                    
+                     this.sendCode(cmd);
+                     
+                    
+                }
             }
-            
         },
         cancelJog: function(){
             this.sendCode('\x85'+'\n');
