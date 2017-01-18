@@ -131,7 +131,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (result){
                 // Bf:15,128 // planner buffer - serial rx buffer
                 this.availableBuffer = parseInt(result[2]);
-                console.log("JOG: buffer size: ", this.availableBuffer);
+                console.log("JOG: buffer size / queue ", this.availableBuffer, this.jogQueue.length );
             }
             if(recvline.dataline.substring(0,2) == "ok"){
                 this.doQueue();
