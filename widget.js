@@ -112,62 +112,64 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         checkRecvLine: function(recvline){
             
             console.log("JOY: ",recvline); 
-            
-            
-            var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
-            var result = status.exec(recvline); 
-            
-            if (!result) return; // ignoring other stuffs
-            
-            if (result) {
-                var x = parseInt(result[1]);
-                var y = parseInt(result[2]);
-                
-                var invertX =  $("#invertX").is(':checked') ;
-                var invertY =  $("#invertY").is(':checked') ;
-                
-                
-                var m = $("#joystick-m").val();
-                var moves = "";
-                
-                var range = [470,530]; 
-                 
-                if (x < range[0]){
-                    moves += 'X'+( invertX ? '' : '-' ) + m;
-                } 
-                else if (x > range[1]){
-                    moves += 'X' +( invertX ? '-' : '' ) + m;
-                }
-                
-                if (y < range[0]){
-                    moves += 'Y'+ ( invertY ? '-' : '') + m;
-                }
-                else if ( y > range[1]){
-                    moves += 'Y'+ ( invertY ? '' : '-') +m;
-                }
-                
-                // 0x85  cancel jog
-                
-                
-                
-                if (moves != ''){ //  && this.status == 'Idle'){
-                    var cmd = '$J=G91'+moves+'\n';
-                    this.sendCode(cmd);
+
+            // check if json
+            if (recvline.match(/^{/)) {
+                // good. it's json (we think)
+                var json = $.parseJSON(recvline);
+                if ('id' in json && json.id == "jog") {
                     
-                }
+        
+                    var x = json.x;
+                    var y = json.y;
+                    
+                    var invertX =  $("#invertX").is(':checked') ;
+                    var invertY =  $("#invertY").is(':checked') ;
+                    
+                    
+                    var m = $("#joystick-m").val();
+                    var feedrate = $("#feedrate-m").val();
+                    
+                    var moves = "";
+                    
+                    var range = [470,530]; 
+                     
+                    if (x < range[0]){
+                        moves += 'X'+( invertX ? '' : '-' ) + m;
+                    } 
+                    else if (x > range[1]){
+                        moves += 'X' +( invertX ? '-' : '' ) + m;
+                    }
+                    
+                    if (y < range[0]){
+                        moves += 'Y'+ ( invertY ? '-' : '') + m;
+                    }
+                    else if ( y > range[1]){
+                        moves += 'Y'+ ( invertY ? '' : '-') +m;
+                    }
                 
-                //  $('#' + this.id).append('<div>X:'+ x +' Y:'+ y +'</div>'); 
+                    // jog is in stand-by position
+                    if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
+                        
+                        this.sendCode('\x85');
+                    }
+                    
+                    
+                    if (moves != ''){ //  && this.status == 'Idle'){
+                        var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
+                        this.sendCode(cmd);
+                        
+                    }
+                
             
-            }
-          /*  if (!(recvline.dataline) || recvline.dataline=='\n' || recvline.dataline.indexOf("ok") >= 0) {
-                //console.log("GRBL: got recvline but it's not a dataline, so returning.");
-                return true;
+                }
             }
             
-            var msg = recvline.dataline;
-            msg = msg.replace(/\n/g, ""); 
-            $('#' + this.id).append('<div>'+msg+'</div>');   
-        */
+        },
+        cancelJog: function(){
+            this.sendCode('\x85');
+            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
+            
             
         },
         sendCode: function(code){
@@ -202,8 +204,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             });
 
             $('#' + this.id + ' .btn-cancel-jog').click(function() {
-                this.sendCode('\x85');
-                chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
+               this.cancelJog();
             });
 
             // Init Hello World 2 button on Tab 1. Notice the use
