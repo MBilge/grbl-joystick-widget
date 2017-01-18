@@ -102,11 +102,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
                 
             
-            chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
-                
-                this.status = status;
-                
-            });
+            // chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
+            //    this.status = status;
+            //    });
+            
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
             
          //  $('#' + this.id + ' .panel-body').html("");
         },
@@ -120,72 +120,87 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
         },
         
+        checkResponse : function(recvline){
+          
+            if (!(recvline.dataline) || recvline.dataline == '\n') {
+                return true;
+            }
+            
+            var reg = new RegExp("\|Bf:([0-9]+),([0-9]+)\|");
+            var result = reg.exec(recvline.dataline);
+            if (result){
+                // Bf:15,128 // planner buffer - serial rx buffer
+                this.availableBuffer = parseInt(result[1], 10);
+            }
+            if(recvline.dataline.substring(0,2) == "ok"){
+                this.doQueue();
+            }
+        },
+        doQueue: function(){
+            if(this.jogQueue.length > 0){
+                if(this.availableBuffer > this.jogQueue[0].length + 1){
+                    var cmd = this.jogQueue.shift();
+                    this.sendCode(cmd);
+                    this.availableBuffer -= cmd.length;
+                }
+            }
+        },
+        availableBuffer: 0,
+        
+        jogQueue : [],
+        
+        jogCancel : false,
+        
         checkRecvLine: function(recvline){
             
             var status = new RegExp("{x: ([0-9]+), y: ([0-9]+)}", "i");
             var result = status.exec(recvline); 
             
             if (!result) return;
-         /*  
-            if (recvline.match(/^{/)) {
-                // good. it's json (we think)
-                
-                var jsonMsg = $.parseJSON(recvline);
-                console.log("JOG: line jsonMsg ",jsonMsg); 
-                
-                if ('D' in jsonMsg){
-                    
-                    var json=$.parseJSON(jsonMsg.D);
-                    
-                    console.log("JOG: line json ",json); 
-
-                    if ('id' in json && json.id == "jog") {
-                        console.log("JOG: got json ", json);
-                */        
                         
-                        var moves = "";
-                        var range = [470,530]; 
-                        var x = result[1];
-                        var y = result[2];
-                        var invertX =  $("#invertX").is(':checked') ;
-                        var invertY =  $("#invertY").is(':checked') ;
-                        
-                        
-                        var m = $("#joystick-m").val();
-                        var feedrate = $("#feedrate-m").val();
-                    
-                         
-                        if (x < range[0]){
-                            moves += 'X'+( invertX ? '' : '-' ) + m;
-                        } 
-                        else if (x > range[1]){
-                            moves += 'X' +( invertX ? '-' : '' ) + m;
-                        }
-                        
-                        if (y < range[0]){
-                            moves += 'Y'+ ( invertY ? '-' : '') + m;
-                        }
-                        else if ( y > range[1]){
-                            moves += 'Y'+ ( invertY ? '' : '-') +m;
-                        }
-                    
-                        // jog is in stand-by position
-                        if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
-                            
-                            this.cancelJog();
-                        }
-                        
-                        
-                        if (moves != ''){ //  && this.status == 'Idle'){
-                            var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
-                            this.sendCode(cmd);
-                            
-                        }
-                    
-                
-         //           }
-         //       }
-         //   }
+            var moves = "";
+            var range = [470,530]; 
+            var x = result[1];
+            var y = result[2];
+            var invertX =  $("#invertX").is(':checked') ;
+            var invertY =  $("#invertY").is(':checked') ;
+            
+            
+            var m = $("#joystick-m").val();
+            var feedrate = $("#feedrate-m").val();
+        
+             
+            if (x < range[0]){
+                moves += 'X'+( invertX ? '' : '-' ) + m;
+            } 
+            else if (x > range[1]){
+                moves += 'X' +( invertX ? '-' : '' ) + m;
+            }
+            
+            if (y < range[0]){
+                moves += 'Y'+ ( invertY ? '-' : '') + m;
+            }
+            else if ( y > range[1]){
+                moves += 'Y'+ ( invertY ? '' : '-') +m;
+            }
+        
+            // jog is in stand-by position
+            if ( x >= range[0] && x <= range[1] && y >= range[0] && y <= range[1]){
+                // send only one jog cancel command
+              //  if (!jogCancel){
+                    this.cancelJog();
+                //    jogCancel = true;
+            //    }
+            }
+            
+            
+            if (moves != ''){ //  && this.status == 'Idle'){
+                var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
+                this.jogQueue.push(cmd);
+                this.doQueue();
+                // this.sendCode(cmd);
+                // jogCancel = false;
+            }
             
         },
         cancelJog: function(){
