@@ -206,8 +206,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-               $(".bar-"+i+"-pos").width( 0 );
-               $(".bar-"+i+"-neg").width( 0 );
+               $(".bar-x-pos").width( 0 );
+               $(".bar-x-neg").width( 0 );
+               $(".bar-y-pos").width( 0 );
+               $(".bar-y-neg").width( 0 );
             }
             
             else{
