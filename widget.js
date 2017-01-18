@@ -126,7 +126,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 return true;
             }
             
-            var reg = new RegExp("\|Bf:([0-9]+),([0-9]+)\|","i");
+            var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");
             var result = reg.exec(recvline.dataline);
             if (result){
                 // Bf:15,128 // planner buffer - serial rx buffer
