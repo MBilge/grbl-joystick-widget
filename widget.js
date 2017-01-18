@@ -175,7 +175,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             $.each(coords,function(i,c){
                 
-                if (zPlane && i == x) return true;
+                if (zPlane && i == 'x') return true;
                 
                 if (c.dir < 0-sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
