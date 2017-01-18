@@ -173,15 +173,24 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var feedrate =  $('#'+ this.id +' .feedrate').val();
             var zPlane = $('#'+ this.id +' .z-plane').is(':checked');
             
+            
+            $(".bar-x-neg")
+            
+            
             $.each(coords,function(i,c){
                 
                 if (zPlane && i == 'x') return true;
                 
                 if (c.dir < 0-sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
+                    
+                    $(".bar-"+i+"-neg").width( (100 * c.dir  / 255) );
+                    
                 }
                 else if (c.dir > 0+sens){
                     moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
+                    
+                    $(".bar-"+i+"-pos").width( (100 * c.dir  / 255) );
                 }
                 
                 console.log("JOG: moves", moves);
@@ -197,6 +206,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cancelJog();
                 //  jogCancel = true;
                //}
+               $(".bar-"+i+"-pos").width( 0 );
+               $(".bar-"+i+"-neg").width( 0 );
             }
             
             else{

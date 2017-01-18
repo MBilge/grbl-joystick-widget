@@ -204,15 +204,24 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var feedrate =  $('#'+ this.id +' .feedrate').val();
             var zPlane = $('#'+ this.id +' .z-plane').is(':checked');
             
+            
+            $(".bar-x-neg")
+            
+            
             $.each(coords,function(i,c){
                 
                 if (zPlane && i == 'x') return true;
                 
                 if (c.dir < 0-sens){
                     moves += i.toUpperCase() + ( c.reverse ? '' : '-') + increment;
+                    
+                    $(".bar-"+i+"-neg").width( (100 * c.dir  / 255) );
+                    
                 }
                 else if (c.dir > 0+sens){
                     moves += i.toUpperCase() + ( c.reverse ? '-' : '') + increment;
+                    
+                    $(".bar-"+i+"-pos").width( (100 * c.dir  / 255) );
                 }
                 
                 console.log("JOG: moves", moves);
@@ -228,6 +237,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cancelJog();
                 //  jogCancel = true;
                //}
+               $(".bar-"+i+"-pos").width( 0 );
+               $(".bar-"+i+"-neg").width( 0 );
             }
             
             else{
@@ -400,6 +411,38 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
     <input type="checkbox" class="z-plane">
     Only Z plane
   </label>
+</div>
+
+<div class="row">
+    <div class="col-md-4"> X </div>
+    <div class="col-md-6">
+        <div class="progress">
+          <div class="progress-bar bar-x-neg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="  float: right; width: 0;">
+          </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="progress">
+          <div class="progress-bar bar-x-pos" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4"> Y </div>
+    <div class="col-md-6">
+        <div class="progress">
+          <div class="progress-bar bar-y-neg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="float: right; width: 0;">
+          </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="progress">
+          <div class="progress-bar bar-y-pos" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+          </div>
+        </div>
+    </div>
 </div>
 
         </div>
