@@ -236,7 +236,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         
                     break;
                     case (barWidth  >= 95):
-                        increment = '10';
+                        increment = '5';
+                         if (this.cmdCounter >= 3) feedrate = 1000;
                         barClass = 'progress-bar-danger';
                         
                     break;
@@ -291,7 +292,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cmdCounter++;
                     
                     if (this.cmdCounter == 3){
-                        feedrate = 2000;
+                       // feedrate = 2000;
                        // this.cancelJog();
                     }
                 
