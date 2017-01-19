@@ -292,6 +292,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     
                     if (this.cmdCounter >= 5){
                         feedrate = 2000;
+                        this.cancelJog();
                     }
                 
                     var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
