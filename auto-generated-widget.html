@@ -225,9 +225,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             $.each(coords,function(i,c){
                 
-                var axis = i.toUpperCase();
+                var axis = zPlane ? 'Z' : i.toUpperCase();
+                
                 if (zPlane) {
-                    axis = 'Z';
                     if (i == 'x') return true;
                 }
                 
