@@ -207,14 +207,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var zPlane    = $('#'+ this.id +' .z-plane').hasClass('active');
             
             
-            
+            var that = this;
             
             $.each(coords,function(i,c){
                 
                 var axis = zPlane ? 'Z' : i.toUpperCase();
                 
                 if (zPlane) {
-                    if (i == 'x') return true;
+                    if (i == 'x' || i == 'y') return true;
                 }
                 
                 var barWidth = (100 * Math.abs(c.dir)  / 255); 
@@ -243,7 +243,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 
-                $('#'+ this.id +' .increment').val(increment);
+                $('#'+ that.id +' .increment').val(increment);
             
                 
                 if (c.dir < 0){

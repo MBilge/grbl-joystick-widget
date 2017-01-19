@@ -258,14 +258,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var zPlane    = $('#'+ this.id +' .z-plane').hasClass('active');
             
             
-            
+            var that = this;
             
             $.each(coords,function(i,c){
                 
                 var axis = zPlane ? 'Z' : i.toUpperCase();
                 
                 if (zPlane) {
-                    if (i == 'x') return true;
+                    if (i == 'x' || i == 'y') return true;
                 }
                 
                 var barWidth = (100 * Math.abs(c.dir)  / 255); 
@@ -294,7 +294,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 
-                $('#'+ this.id +' .increment').val(increment);
+                $('#'+ that.id +' .increment').val(increment);
             
                 
                 if (c.dir < 0){
@@ -519,7 +519,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.93</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.94</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->
