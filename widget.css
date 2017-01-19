@@ -1,10 +1,29 @@
 /* CSS for ChiliPeppr Widget */
 
-#com-chilipeppr-widget-template {
+#com-chilipeppr-grbl-joystick {
    
 }
 
-#com-chilipeppr-widget-template .nav-tabs>li>a {
-    padding: 2px 6px;
+
+.x-bar-container div, .y-bar-container div{
+    float:left;
 }
 
+.progress {
+    width: 50%;
+}
+.bar-neg{
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+.bar-pos{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.x-bar-axis, .y-bar-axis{
+    width:20%;
+}
+
+.progress-bar-container{
+    width: 80%;
+}

@@ -16,15 +16,33 @@
     <style type='text/css'>
 /* CSS for ChiliPeppr Widget */
 
-#com-chilipeppr-widget-template {
+#com-chilipeppr-grbl-joystick {
    
 }
 
-#com-chilipeppr-widget-template .nav-tabs>li>a {
-    padding: 2px 6px;
+
+.x-bar-container div, .y-bar-container div{
+    float:left;
 }
 
+.progress {
+    width: 50%;
+}
+.bar-neg{
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+.bar-pos{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.x-bar-axis, .y-bar-axis{
+    width:20%;
+}
 
+.progress-bar-container{
+    width: 80%;
+}
     </style>
 
     <script type='text/javascript'>
@@ -199,7 +217,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             };
           
             var moves = "";
-            var sens = 10 ; // sensitivity 
             var increment = $('#'+ this.id +' .increment').val();
             var feedrate =  $('#'+ this.id +' .feedrate').val();
             var zPlane = $('#'+ this.id +' .z-plane').is(':checked');
@@ -217,13 +234,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 if (c.dir < 0-sens){
                     moves += axis + ( c.reverse ? '' : '-') + increment;
                     
-                    $(".bar-"+i+"-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
+                    $("."+i+"bar-container .bar-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
                     
                 }
                 else if (c.dir > 0+sens){
                     moves += axis + ( c.reverse ? '-' : '') + increment;
                     
-                    $(".bar-"+i+"-pos").width( (100 * c.dir  / 255) + "%");
+                    $("."+i+"bar-container .bar-pos").width( (100 * c.dir  / 255) + "%");
                 }
                 
                 console.log("JOG: moves", moves);
@@ -233,16 +250,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // console.log('JOG: moves: ',moves);
             
             // jog is in stand-by position
-            if ( coords.x.dir >= 0-sens && coords.x.dir <= sens && coords.y.dir >= 0-sens && coords.y.dir <= sens){
+            if ( coords.x.dir == 0 && coords.y.dir == 0){
                 // send only one jog cancel command
                 // if (!jogCancel){
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-               $(".bar-x-pos").width( 0 );
-               $(".bar-x-neg").width( 0 );
-               $(".bar-y-pos").width( 0 );
-               $(".bar-y-neg").width( 0 );
+               $(".bar-pos").width( 0 );
+               $(".bar-neg").width( 0 );
+
             }
             
             else{
@@ -267,9 +283,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             chilipeppr.publish("/com-chilipeppr-widget-serialport/send", code);
             
         },
-        
         btnSetup: function() {
-
             var that = this;
             $('#' + this.id + ' .hidebody').click(function(evt) {
                 console.log("hide/unhide body");
@@ -286,6 +300,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
             });
 
+            $('#'+ this.id +' .z-plane').click(function(){
+                
+               if ( $(this).is(':checked')){
+                    $('.x-bar-container').hide();
+                    $('.y-bar-container .axis').html('Z');
+               } 
+               else{
+                    $('.x-bar-container').show();
+                    $('.y-bar-container .axis').html('Y');
+               }
+                
+            });
             // Ask bootstrap to scan all the buttons in the widget to turn
             // on popover menus
             $('#' + this.id + ' .btn').popover({
@@ -379,7 +405,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.80</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.81</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->
@@ -413,36 +439,36 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             <div class="checkbox">
               <label>
                 <input type="checkbox" class="z-plane">
-                Only Z plane
+                Move Z axis
               </label>
             </div>
-            <div class="bars">
-                <div class="">
-                    <div style="width:20%;float:left"> 
+            <div class="bars-wrap">
+                <div class="x-bar-container">
+                    <div class="axis"> 
                         X 
                     </div>
-                    <div style="width:80%;float:left">
-                        <div class="progress"  style="width:50%;float:left">
-                          <div class="progress-bar bar-x-neg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="  float: right; width: 0;">
+                    <div class="progress-bar-container">
+                        <div class="progress">
+                          <div class="progress-bar bar-neg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="  float: right; width: 0;">
                           </div>
                         </div>
-                        <div class="progress"  style="width:50%;float:left">
-                          <div class="progress-bar bar-x-pos" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+                        <div class="progress">
+                          <div class="progress-bar bar-pos" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
                           </div>
                         </div>
                     </div>
                 </div>
-                <div class="">
-                    <div style="width:20%; float:left"> 
+                <div class="y-bar-container">
+                    <div class="axis"> 
                         Y 
                     </div>
-                    <div style="width:80%; float:left">
-                        <div class="progress" style="width:50%;float:left">
-                          <div class="progress-bar bar-y-neg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="  float: right; width: 0;">
+                    <div class="progress-bar-container">
+                        <div class="progress">
+                          <div class="progress-bar bar-neg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="  float: right; width: 0;">
                           </div>
                         </div>
-                        <div class="progress"  style="width:50%;float:left">
-                          <div class="progress-bar bar-y-pos" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+                        <div class="progress">
+                          <div class="progress-bar bar-pos" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
                           </div>
                         </div>
                     </div>

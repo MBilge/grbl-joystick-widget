@@ -168,7 +168,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             };
           
             var moves = "";
-            var sens = 10 ; // sensitivity 
             var increment = $('#'+ this.id +' .increment').val();
             var feedrate =  $('#'+ this.id +' .feedrate').val();
             var zPlane = $('#'+ this.id +' .z-plane').is(':checked');
@@ -186,13 +185,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 if (c.dir < 0-sens){
                     moves += axis + ( c.reverse ? '' : '-') + increment;
                     
-                    $(".bar-"+i+"-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
+                    $("."+i+"bar-container .bar-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
                     
                 }
                 else if (c.dir > 0+sens){
                     moves += axis + ( c.reverse ? '-' : '') + increment;
                     
-                    $(".bar-"+i+"-pos").width( (100 * c.dir  / 255) + "%");
+                    $("."+i+"bar-container .bar-pos").width( (100 * c.dir  / 255) + "%");
                 }
                 
                 console.log("JOG: moves", moves);
@@ -202,16 +201,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // console.log('JOG: moves: ',moves);
             
             // jog is in stand-by position
-            if ( coords.x.dir >= 0-sens && coords.x.dir <= sens && coords.y.dir >= 0-sens && coords.y.dir <= sens){
+            if ( coords.x.dir == 0 && coords.y.dir == 0){
                 // send only one jog cancel command
                 // if (!jogCancel){
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-               $(".bar-x-pos").width( 0 );
-               $(".bar-x-neg").width( 0 );
-               $(".bar-y-pos").width( 0 );
-               $(".bar-y-neg").width( 0 );
+               $(".bar-pos").width( 0 );
+               $(".bar-neg").width( 0 );
+
             }
             
             else{
@@ -236,9 +234,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             chilipeppr.publish("/com-chilipeppr-widget-serialport/send", code);
             
         },
-        
         btnSetup: function() {
-
             var that = this;
             $('#' + this.id + ' .hidebody').click(function(evt) {
                 console.log("hide/unhide body");
@@ -255,6 +251,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
             });
 
+            $('#'+ this.id +' .z-plane').click(function(){
+                
+               if ( $(this).is(':checked')){
+                    $('.x-bar-container').hide();
+                    $('.y-bar-container .axis').html('Z');
+               } 
+               else{
+                    $('.x-bar-container').show();
+                    $('.y-bar-container .axis').html('Y');
+               }
+                
+            });
             // Ask bootstrap to scan all the buttons in the widget to turn
             // on popover menus
             $('#' + this.id + ' .btn').popover({
