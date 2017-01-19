@@ -186,8 +186,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (!result) return;
                   
             var coords = {
-                "x" : { "dir" : result[1] , "reverse" : $('#'+ this.id +' .x-reverse').is(':checked') },
-                "y" : { "dir" : result[2] , "reverse" : $('#'+ this.id +' .y-reverse').is(':checked')  },
+                "x" : { "dir" : result[1] , "invert" : this.invert.xaxis },
+                "y" : { "dir" : result[2] , "invert" : this.invert.yaxis  },
                 // "z" : { }
             };
             
@@ -204,7 +204,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             // var increment = parseFloat($('#'+ this.id +' .increment').val());
             var feedrate  = parseInt($('#'+ this.id +' .feedrate').val());
-            var zPlane    = $('#'+ this.id +' .z-plane').is(':checked');
+            var zPlane    = $('#'+ this.id +' .z-plane').hasClass('active');
             
             
             
@@ -242,18 +242,20 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         increment = '0.01';
                 }
                 
+                
+                $('#'+ this.id +' .increment').val(increment)
             
                 
                 if (c.dir < 0){
                     
-                    moves += axis + ( c.reverse ? '' : '-') + increment;
+                    moves += axis + ( c.invert ? '' : '-') + increment;
                     
                     $('.'+i+'-bar-container .bar-neg').width( barWidth + '%').removeClass().addClass('progress-bar bar-neg '+barClass);
                     
                 }
                 else if (c.dir > 0){
                     
-                    moves += axis + ( c.reverse ? '-' : '') + increment;
+                    moves += axis + ( c.invert ? '-' : '') + increment;
                     
                     $('.'+i+'-bar-container .bar-pos').width( barWidth + '%').removeClass().addClass('progress-bar bar-pos '+barClass);
                 }
@@ -318,6 +320,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             chilipeppr.publish("/com-chilipeppr-widget-serialport/send", code);
             
         },
+        invert :{
+            "xaxis-class": {
+              "normal" : "glyphicon glyphicon-circle-arrow-right", "invert": "glyphicon glyphicon-circle-arrow-left"
+            },
+            "yaxis-class" : {
+              "normal" : "glyphicon glyphicon-circle-arrow-up", "invert": "glyphicon glyphicon-circle-arrow-down"
+            },
+            "xaxis" : false,
+            "yaxis" : false,
+            "zaxis" : false
+         },
+      
         btnSetup: function() {
             var that = this;
             $('#' + this.id + ' .hidebody').click(function(evt) {
@@ -333,19 +347,36 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     that.unSubscribeReceive();
                 }
             });
-
+            $('#'+ this.id +' .invert-chk').click(function() {
+                var axis = $(this).data("axis");
+                that.invert[axis+'axis'] = $(this).is(":checked");
+                
+            });
             $('#'+ this.id +' .z-plane').click(function(){
                 
-               if ( $(this).is(':checked')){
-                    $('.x-bar-container').hide();
+               if (!$(this).hasClass('active')){
+                    $(this).addClass('active');
+                    $('.xy-plane').removeClass('active');
                     $('.y-bar-container .axis').html('Z');
+                    $('.x-bar-container').hide();
                } 
                else{
+                    $(this).removeClass('active');
                     $('.x-bar-container').show();
                     $('.y-bar-container .axis').html('Y');
                }
                 
             });
+            
+             $('#'+ this.id +' .xy-plane').click(function(){
+                 
+                 $('.z-plane').click();
+                  
+             });
+            
+             $('#'+ this.id +' .show-settings').click(function(){
+                 $('.settings').toggle();
+             });
             // Ask bootstrap to scan all the buttons in the widget to turn
             // on popover menus
             $('#' + this.id + ' .btn').popover({
