@@ -15,13 +15,13 @@ int normalDelay = 50;
 int sleepDelay = 5 * 1000; // send message every x seconds
 
 // range for sensitivity
-int range[] = {-10, 10};
+int range[] = {-18, 18};
 
 int x;
 int y;
 
 // cycle trough analoRead
-int c = 10;
+int c = 3;
 
 // if in normal position use time counter 
 // to increase delay between messages
@@ -29,6 +29,7 @@ unsigned long sleepTime;
 unsigned long lastCommand;
 unsigned long lastSent;
 boolean sleeping;
+
 
 
 void setup() {
@@ -42,6 +43,8 @@ void setup() {
 void loop() { 
   readInputs();
   checkInputs();
+  delay(60);
+  readInputs();
   Send();
 }
 
@@ -52,14 +55,19 @@ void Send(){
     //    sendJson();
     //    lastSent = millis();
     //} 
+   
   }
   else{
     if (millis() - lastSent  > normalDelay){
-       sendJson();
-       lastSent = millis();
+      
+     
+       
+      
+          sendJson();
+          lastSent = millis();
+     
     }
   }
-
 }
 void checkInputs(){
 
@@ -78,7 +86,23 @@ void checkInputs(){
       lastCommand = millis();
   }
 }
+
 void readInputs(){
+
+ 
+    
+  x = analogRead(PINX);
+  x = -(512 - x) / 2;
+  
+  
+  y = analogRead(PINY); 
+  y = (512 - y) / 2;
+
+  
+}
+
+
+void readInputsOK(){
 
   x=0;
   y=0;
