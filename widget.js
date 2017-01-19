@@ -112,6 +112,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                    this.cancelJog();
                    
                }
+               if (status == 'Run'){
+                   
+                   this.active = false;
+               }
+               else{
+                   this.active = true;
+               }
                
             });
             
@@ -133,7 +140,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         
         checkResponse : function(recvline){
           
-            if (!(recvline.dataline) || recvline.dataline == '\n') {
+          
+          
+            if (!(recvline.dataline) || recvline.dataline == '\n' || !this.active) {
                 return true;
             }
           /*  
