@@ -236,8 +236,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         
                     break;
                     case (barWidth  >= 95):
-                        increment = '5';
-                         if (this.cmdCounter >= 3) feedrate = 1000;
+                        increment = '1.5';
+                         if (this.cmdCounter >= 5) feedrate = 1000;
                         barClass = 'progress-bar-danger';
                         
                     break;
