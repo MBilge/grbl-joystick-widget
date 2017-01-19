@@ -369,7 +369,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             });
             
              $('#'+ this.id +' .xy-plane').click(function(){
-                 
+                 $(this).addClass('active');
                  $('.z-plane').click();
                   
              });
