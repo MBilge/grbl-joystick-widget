@@ -261,6 +261,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 // send only one jog cancel command
                 // if (!jogCancel){
                     this.cancelJog();
+                
                 //  jogCancel = true;
                //}
                
@@ -286,6 +287,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             }
         },
         cancelJog: function(){
+            
+            this.jogQueue = [];
             this.sendCode('\x85'+'\n');
             // we should send also the % command?
            //  this.sendCode('%'+'\n');
