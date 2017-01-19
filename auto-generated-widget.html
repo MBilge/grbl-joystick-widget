@@ -282,12 +282,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         increment = '0.01';
                 }
                 
-                if (this.cmdCounter >= 5){
-                    
-                    increment = 5;
-                    feedrate = 2000;
-                    
-                }
+            
                 
                 if (c.dir < 0){
                     
@@ -317,10 +312,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-                $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar bar-pos');
-                $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar bar-neg');
                
-                this.cmdCounter = 0;
 
             }
             
@@ -330,7 +322,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                     this.cmdCounter++;
                     
-                    
+                    if (this.cmdCounter >= 5){
+                        feedrate = 2000;
+                    }
                 
                     var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
                     this.jogQueue.push(cmd);
@@ -345,6 +339,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // we should send also the % command?
            //  this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
+            $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar bar-pos');
+            $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar bar-neg');
+               
+            this.cmdCounter = 0;
         },
         sendCode: function(code){
             
@@ -463,7 +461,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.87</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.88</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->

@@ -233,12 +233,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         increment = '0.01';
                 }
                 
-                if (this.cmdCounter >= 5){
-                    
-                    increment = 5;
-                    feedrate = 2000;
-                    
-                }
+            
                 
                 if (c.dir < 0){
                     
@@ -268,10 +263,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-                $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar bar-pos');
-                $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar bar-neg');
                
-                this.cmdCounter = 0;
 
             }
             
@@ -281,7 +273,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                     this.cmdCounter++;
                     
-                    
+                    if (this.cmdCounter >= 5){
+                        feedrate = 2000;
+                    }
                 
                     var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
                     this.jogQueue.push(cmd);
@@ -296,6 +290,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // we should send also the % command?
            //  this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
+            $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar bar-pos');
+            $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar bar-neg');
+               
+            this.cmdCounter = 0;
         },
         sendCode: function(code){
             
