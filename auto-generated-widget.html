@@ -336,9 +336,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                     this.cmdCounter++;
                     
-                    if (this.cmdCounter >= 3){
+                    if (this.cmdCounter == 3){
                         feedrate = 2000;
-                        this.cancelJog();
+                       // this.cancelJog();
                     }
                 
                     var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
@@ -527,7 +527,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.98</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.0.99</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->
