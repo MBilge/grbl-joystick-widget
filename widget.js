@@ -235,14 +235,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     
                     moves += axis + ( c.reverse ? '' : '-') + increment;
                     
-                    $('.'+i+'-bar-container .bar-neg').width( barWidth + '%').removeClass().addClass('progress-bar '+barClass);
+                    $('.'+i+'-bar-container .bar-neg').width( barWidth + '%').removeClass().addClass('progress-bar bar-neg '+barClass);
                     
                 }
                 else if (c.dir > 0){
                     
                     moves += axis + ( c.reverse ? '-' : '') + increment;
                     
-                    $('.'+i+'-bar-container .bar-pos').width( barWidth + '%').removeClass().addClass('progress-bar '+barClass);
+                    $('.'+i+'-bar-container .bar-pos').width( barWidth + '%').removeClass().addClass('progress-bar bar-pos '+barClass);
                 }
                 
                 // console.log("JOG: moves", moves);
@@ -259,8 +259,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-                $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar');
-                $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar');
+                $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar bar-pos');
+                $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar bar-neg');
                
                 this.cmdCounter = 0;
 
