@@ -216,6 +216,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 if (zPlane) {
                     if (i == 'x' || i == 'y') return true;
                 }
+                else{
+                    if (i == 'z') return true;
+                }
                 
                 var barWidth = (100 * Math.abs(c.dir)  / 255); 
                 var increment = '';
@@ -369,9 +372,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             });
             
              $('#'+ this.id +' .xy-plane').click(function(){
-                 $(this).addClass('active');
-                 $('.z-plane').click();
-                  
+                 
+                if (!$(this).hasClass('active')){
+                    $(this).addClass('active');
+                    $('.z-plane').removeClass('active');
+                    $('.x-bar-container').show();
+                    $('.y-bar-container .axis').html('Y');
+               } 
+               else{
+                    $(this).removeClass('active');
+                    $('.y-bar-container .axis').html('Z');
+                    $('.x-bar-container').hide();
+               }
              });
             
              $('#'+ this.id +' .show-settings').click(function(){
