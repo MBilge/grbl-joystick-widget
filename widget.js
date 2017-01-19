@@ -243,7 +243,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 
-                $('#'+ this.id +' .increment').val(increment)
+                $('#'+ this.id +' .increment').val(increment);
             
                 
                 if (c.dir < 0){
