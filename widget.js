@@ -186,13 +186,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 if (c.dir < 0-sens){
                     moves += axis + ( c.reverse ? '' : '-') + increment;
                     
-                    $(".bar-"+i+"-neg").width( (100 * Math.abs(c.dir)  / 255) );
+                    $(".bar-"+i+"-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
                     
                 }
                 else if (c.dir > 0+sens){
                     moves += axis + ( c.reverse ? '-' : '') + increment;
                     
-                    $(".bar-"+i+"-pos").width( (100 * c.dir  / 255) );
+                    $(".bar-"+i+"-pos").width( (100 * c.dir  / 255) + "%");
                 }
                 
                 console.log("JOG: moves", moves);

@@ -1,4 +1,8 @@
 
+#define PINX A0
+#define PINY A1
+
+
 // id for json
 char id[] = "jog";
 
@@ -6,11 +10,12 @@ char id[] = "jog";
 
 // default delay for sending messages
 int d; 
-int normalDelay = 250;
-int sleepDelay = 60 * 1000; // send message every x seconds
+int btn = 0;
+int normalDelay = 50;
+int sleepDelay = 5 * 1000; // send message every x seconds
 
 // range for sensitivity
-int range[] = {500, 520};
+int range[] = {-10, 10};
 
 int x;
 int y;
@@ -30,6 +35,7 @@ void setup() {
 
  Serial.begin(115200);
  sleeping = true;
+  
  
 }
 
@@ -56,6 +62,9 @@ void Send(){
 
 }
 void checkInputs(){
+
+ 
+  
   if (x > range[0] && x < range[1] && y > range[0] && y < range[1]){
       // we are in stand-by mode
       // waiting x3 normalDelay before going in sleep mode
@@ -74,14 +83,14 @@ void readInputs(){
   x=0;
   y=0;
   for (int i = 1; i <= c; i++) {
-    x += analogRead(A0);
+    x += analogRead(PINX);
   }
-  x = x/c;
+  x = -(512 - (x/c)) / 2;
   
   for (int i = 1; i <= c; i++) {
-    y += analogRead(A1);
+    y += analogRead(PINY);
   }
-  y = y/c;
+  y = (512 - (y/c)) / 2;
 
   
 }
