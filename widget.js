@@ -184,7 +184,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
           
             var moves = "";
             
-            var increment = parseFloat($('#'+ this.id +' .increment').val());
+            // var increment = parseFloat($('#'+ this.id +' .increment').val());
             var feedrate  = parseInt($('#'+ this.id +' .feedrate').val());
             var zPlane    = $('#'+ this.id +' .z-plane').is(':checked');
             
@@ -200,6 +200,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 var barWidth = (100 * Math.abs(c.dir)  / 255); 
+                var increment = '';
+                
+                switch (true) {
+                    case (barWidth > 33 && barWidth <= 66):
+                        increment = '0.1';
+                    break;
+                    case (barWidth > 66):
+                        increment = '1';
+                    break;
+                    default:
+                        increment = '0.01';
+                }
                 
                 if (c.dir < 0){
                     
