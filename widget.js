@@ -201,30 +201,48 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 var barWidth = (100 * Math.abs(c.dir)  / 255); 
                 var increment = '';
+                var barClass = 'progress-bar-info';
                 
                 switch (true) {
                     case (barWidth > 33 && barWidth <= 66):
                         increment = '0.1';
+                        barClass = 'progress-bar-success';
+                        
                     break;
-                    case (barWidth > 66):
+                    case (barWidth > 66 && barWidth < 95):
                         increment = '1';
+                        barClass = 'progress-bar-warning';
+                        
                     break;
+                    case (barWidth  >= 95):
+                        increment = '3';
+                        barClass = 'progress-bar-danger';
+                        
+                    break;
+                    
                     default:
                         increment = '0.01';
+                }
+                
+                if (this.cmdCounter >= 5){
+                    
+                    increment = 5;
+                    feedrate = 2000;
+                    
                 }
                 
                 if (c.dir < 0){
                     
                     moves += axis + ( c.reverse ? '' : '-') + increment;
                     
-                    $("."+i+"-bar-container .bar-neg").width( barWidth + "%");
+                    $('.'+i+'-bar-container .bar-neg').width( barWidth + '%').removeClass().addClass('progress-bar '+barClass);
                     
                 }
                 else if (c.dir > 0){
                     
                     moves += axis + ( c.reverse ? '-' : '') + increment;
                     
-                    $("."+i+"-bar-container .bar-pos").width( barWidth + "%");
+                    $('.'+i+'-bar-container .bar-pos').width( barWidth + '%').removeClass().addClass('progress-bar '+barClass);
                 }
                 
                 // console.log("JOG: moves", moves);
@@ -241,8 +259,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-                $(".bar-pos").width( 0 );
-                $(".bar-neg").width( 0 );
+                $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar');
+                $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar');
                
                 this.cmdCounter = 0;
 
@@ -267,7 +285,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         cancelJog: function(){
             this.sendCode('\x85'+'\n');
             // we should send also the % command?
-            this.sendCode('%'+'\n');
+           //  this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
         },
         sendCode: function(code){
