@@ -188,7 +188,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var coords = {
                 "x" : { "dir" : result[1] , "invert" : this.invert.xaxis },
                 "y" : { "dir" : result[2] , "invert" : this.invert.yaxis  },
-                // "z" : { }
+                "z" : { "dir" : result[2] , "invert" : this.invert.zaxis  },
             };
             
             
