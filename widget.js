@@ -290,7 +290,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                     this.cmdCounter++;
                     
-                    if (this.cmdCounter >= 5){
+                    if (this.cmdCounter >= 3){
                         feedrate = 2000;
                         this.cancelJog();
                     }
