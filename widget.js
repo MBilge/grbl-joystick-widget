@@ -185,13 +185,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 if (c.dir < 0){
                     moves += axis + ( c.reverse ? '' : '-') + increment;
                     
-                    $("."+i+"bar-container .bar-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
+                    $("."+i+"-bar-container .bar-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
                     
                 }
                 else if (c.dir > 0){
                     moves += axis + ( c.reverse ? '-' : '') + increment;
                     
-                    $("."+i+"bar-container .bar-pos").width( (100 * c.dir  / 255) + "%");
+                    $("."+i+"-bar-container .bar-pos").width( (100 * c.dir  / 255) + "%");
                 }
                 
                 console.log("JOG: moves", moves);
