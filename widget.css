@@ -12,15 +12,15 @@
 .progress {
     width: 50%;
 }
-.bar-neg{
+.progress-bar-container div:first-child{
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
 }
-.bar-pos{
+.progress-bar-container div:last-child{
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
-.x-bar-axis, .y-bar-axis{
+.bars-wrap .axis{
     width:20%;
 }
 
