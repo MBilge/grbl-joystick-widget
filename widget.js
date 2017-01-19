@@ -87,7 +87,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
          * instantiating code like a workspace or a different widget.
          */
         
-        status : '',
+
+        active : false,
          
         init: function() {
            
@@ -102,9 +103,17 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
                 
             
-            // chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
-            //    this.status = status;
-            //    });
+            chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
+                
+               
+               this.status = status;
+               if (status == 'Jog' && this.counter == 0){
+                   // machine is moving and it's wrong. Send cancel jog command
+                   this.cancelJog();
+                   
+               }
+               
+            });
             
             chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
             this.hideBody();
@@ -113,10 +122,12 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
         unSubscribeReceive : function(){
             chilipeppr.unsubscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+            this.active = false;
         },
         subscribeReceive : function(){
          
             chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);   
+            this.active = true;
             
         },
         
@@ -152,7 +163,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         
         jogQueue : [],
         
+        
+        
         jogCancel : false,
+        
+        cmdCounter : 0,
     
         regexLine : new RegExp("{x: ([0-9-]+), y: ([0-9-]+)}", "i"),
         
@@ -168,9 +183,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             };
           
             var moves = "";
-            var increment = $('#'+ this.id +' .increment').val();
-            var feedrate =  $('#'+ this.id +' .feedrate').val();
-            var zPlane = $('#'+ this.id +' .z-plane').is(':checked');
+            
+            var increment = parseFloat($('#'+ this.id +' .increment').val());
+            var feedrate  = parseInt($('#'+ this.id +' .feedrate').val());
+            var zPlane    = $('#'+ this.id +' .z-plane').is(':checked');
+            
             
             
             
@@ -182,19 +199,23 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     if (i == 'x') return true;
                 }
                 
+                var barWidth = (100 * Math.abs(c.dir)  / 255); 
+                
                 if (c.dir < 0){
+                    
                     moves += axis + ( c.reverse ? '' : '-') + increment;
                     
-                    $("."+i+"-bar-container .bar-neg").width( (100 * Math.abs(c.dir)  / 255) + "%");
+                    $("."+i+"-bar-container .bar-neg").width( barWidth + "%");
                     
                 }
                 else if (c.dir > 0){
+                    
                     moves += axis + ( c.reverse ? '-' : '') + increment;
                     
-                    $("."+i+"-bar-container .bar-pos").width( (100 * c.dir  / 255) + "%");
+                    $("."+i+"-bar-container .bar-pos").width( barWidth + "%");
                 }
                 
-                console.log("JOG: moves", moves);
+                // console.log("JOG: moves", moves);
                 
             });
         
@@ -202,19 +223,27 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             // jog is in stand-by position
             if ( coords.x.dir == 0 && coords.y.dir == 0){
+                
                 // send only one jog cancel command
                 // if (!jogCancel){
                     this.cancelJog();
                 //  jogCancel = true;
                //}
-               $(".bar-pos").width( 0 );
-               $(".bar-neg").width( 0 );
+                $(".bar-pos").width( 0 );
+                $(".bar-neg").width( 0 );
+               
+                this.cmdCounter = 0;
 
             }
             
             else{
             
-                if (moves != ''){ //  && this.status == 'Idle'){
+                if (moves != ''){ 
+                
+                    this.cmdCounter++;
+                    
+                    
+                
                     var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
                     this.jogQueue.push(cmd);
                     this.doQueue();
@@ -246,8 +275,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 else {
                     // hide
                     that.hideBody(evt);
-                     that.unSubscribeReceive();
-                    
+                    that.unSubscribeReceive();
                 }
             });
 
@@ -272,11 +300,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 trigger: "hover",
                 container: 'body'
             });
-
-            $('#' + this.id + ' .btn-cancel-jog').click(function() {
-               this.cancelJog();
-            });
-
         },
       
         showBody: function(evt) {
