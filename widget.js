@@ -190,7 +190,16 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 "y" : { "dir" : result[2] , "reverse" : $('#'+ this.id +' .y-reverse').is(':checked')  },
                 // "z" : { }
             };
-          
+            
+            
+            
+             if ( coords.x.dir == 0 && coords.y.dir == 0){
+                    this.cancelJog();
+                    return;
+             }
+            
+            
+            
             var moves = "";
             
             // var increment = parseFloat($('#'+ this.id +' .increment').val());
@@ -256,7 +265,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // console.log('JOG: moves: ',moves);
             
             // jog is in stand-by position
-            if ( coords.x.dir == 0 && coords.y.dir == 0){
+        /*
+        if ( coords.x.dir == 0 && coords.y.dir == 0){
                 
                 // send only one jog cancel command
                 // if (!jogCancel){
@@ -269,6 +279,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             }
             
             else{
+            */
             
                 if (moves != ''){ 
                 
@@ -279,12 +290,16 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     }
                 
                     var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
-                    this.jogQueue.push(cmd);
-                    this.doQueue();
-                    // jogCancel = false;
-                    // this.sendCode(cmd);
+                    
+                    
+                    this.sendCode(cmd);
+                    
+                    // this.jogQueue.push(cmd);
+                    // this.doQueue();
+                    
+                    
                 }
-            }
+            // }
         },
         cancelJog: function(){
             
