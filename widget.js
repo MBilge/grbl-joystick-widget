@@ -182,7 +182,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // var dt =  (v * v) / 2 * 10 * 14;
             
             // s : incremental distance of jog command in mm
-            var s = v * dt;
+            var s = (v/60) * dt;
             
             
             return  s;
@@ -287,7 +287,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 */
-                c.increment = that.calcDistance(c.dir);
+                var maxFeedRate = 1000;
+                c.feedrate =  (Math.abs(c.dir) * (maxFeedRate  / 60)) / 255;
+                c.increment = that.calcDistance(c.feedrate);
 
                 
                 if (c.dir < 0) {
