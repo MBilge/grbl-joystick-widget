@@ -233,7 +233,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             }
             var moves = "";
             //var maxFeedRate = 1500;
-            var maxFeedRate = parseInt(("#jog-max").val(),10);
+            var maxFeedRate = parseInt($("#jog-max").val(),10);
             
             var barClass = 'progress-bar-info';
 
