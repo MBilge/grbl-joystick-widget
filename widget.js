@@ -190,34 +190,36 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         
         regexLine: new RegExp("jog:([0-9-]+):([0-9-]+)", "i"),
          
-         
+        coords : {
+                "x": {
+                    "dir": 0,
+                    "invert": false,
+                    "increment": 0,
+                    "feedrate" : 0
+                },
+                "y": {
+                    "dir": 0,
+                    "invert": false,
+                    "increment": 0,
+                    "feedrate" : 0
+                },
+                "z": {
+                    "dir": 0,
+                    "invert": false,
+                    "increment": 0,
+                    "feedrate" : 0
+                },
+        },
+
         checkRecvLine: function(recvline) {
 
             var result = this.regexLine.exec(recvline);
             if (!result) return;
-
-            var coords = {
-                "x": {
-                    "dir": result[1],
-                    "invert": this.invert.xaxis,
-                    "increment": '',
-                    "feedrate" : ''
-                },
-                "y": {
-                    "dir": result[2],
-                    "invert": this.invert.yaxis,
-                    "increment": '',
-                    "feedrate" : ''
-                },
-                "z": {
-                    "dir": result[2],
-                    "invert": this.invert.zaxis,
-                    "increment": '',
-                    "feedrate" : ''
-                },
-            };
-
-            if (coords.x.dir == 0 && coords.y.dir == 0) {
+            this.coords.x.dir = parseInt(result[1],10);
+            this.coords.y.dir = parseInt(result[2],10);
+            this.coords.z.dir = parseInt(result[2],10);
+           
+            if (this.coords.x.dir == 0 && this.coords.y.dir == 0) {
                 this.cancelJog();
                 return;
             }
@@ -232,7 +234,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var that = this;
 
 
-            $.each(coords, function(i, c) {
+            $.each(this.coords, function(i, c) {
 
                 var axis = zPlane ? 'Z' : i.toUpperCase();
 
@@ -245,7 +247,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     if (i == 'z') return true;
                 }
 
-                var barWidth = (100 * Math.abs(c.dir) / 255);
+                var barWidth = (100 * Math.abs(that.c.dir) / 255);
                 var barClass = 'progress-bar-info';
 
 
@@ -289,7 +291,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 */
                 var maxFeedRate = 1000;
                 c.feedrate =  ((Math.abs(c.dir) * maxFeedRate) / 255).toFixed(3);
-                c.increment = that.calcDistance(c.feedrate).toFixed(3);
+                c.increment += that.calcDistance(c.feedrate).toFixed(3);
 
                 
                 if (c.dir < 0) {
@@ -304,7 +306,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             });
 
             // Whit two different feedrates for axis send command with the greater value
-            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir)) ? coords.x.feedrate : coords.y.feedrate;
+            feedrate = (Math.abs(this.coords.x.dir) >= Math.abs(this.coords.y.dir)) ? this.coords.x.feedrate : this.coords.y.feedrate;
             
             
              // maxFeedRate : mm/min value for the max jog feed rate
@@ -335,7 +337,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             this.jogQueue = [];
             this.sendCode('\x85');
-            
+            this.coords.x.increment =0;
+            this.coords.y.increment =0;
+            this.coords.z.increment =0;
             // we should send also the % command?
             // this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
