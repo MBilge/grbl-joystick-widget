@@ -151,13 +151,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.plannerBuffer = parseInt(result[1],10);
             }
             if (recvline.dataline.substring(0, 2) == "ok") {
-                this.doQueue();
+              //  this.doQueue();
             }
         },
         doQueue: function() {
-            if (this.status != 'Jog') {
-                this.cancelJog();
-            }
+         
             if (this.jogQueue.length > 0) {
                 if(this.plannerBuffer > 1){
                     var cmd = this.jogQueue.shift();
@@ -357,14 +355,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 this.cmdCounter++;
                 var cmd = '$J='+ this.gCodeMove + moves + 'F' + feedrate + '\n';
                 
-                if (this.plannerBuffer > 1){
+               // if (this.plannerBuffer > 1){
                     // direct send only if planner has free spaces
                     this.sendCode(cmd);
-                }
-                else{
-                    this.jogQueue.push(cmd);
-                    this.doQueue();
-                }
+            //    }
+            //    else{
+             //       this.jogQueue.push(cmd);
+            //        this.doQueue();
+             //   }
             }
             // }
         },
