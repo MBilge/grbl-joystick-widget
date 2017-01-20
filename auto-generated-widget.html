@@ -324,7 +324,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             
             
-            feedrate = (coords.x.dir >= coords.y.dir)  ? coords.x.feedrate: coords.y.feedrate;
+            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir))  ? coords.x.feedrate: coords.y.feedrate;
 
             if (moves != ''){ 
             
@@ -510,7 +510,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.7</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.8</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->

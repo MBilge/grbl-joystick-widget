@@ -279,7 +279,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             
             
-            feedrate = (coords.x.dir >= coords.y.dir)  ? coords.x.feedrate: coords.y.feedrate;
+            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir))  ? coords.x.feedrate: coords.y.feedrate;
 
             if (moves != ''){ 
             
