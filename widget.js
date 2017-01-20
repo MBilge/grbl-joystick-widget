@@ -172,7 +172,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         
         jogQueue : [],
         
-        
+        feedrate : '',
         
         jogCancel : false,
         
@@ -203,9 +203,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var moves = "";
             
             // var increment = parseFloat($('#'+ this.id +' .increment').val());
-            var feedrate  = parseInt($('#'+ this.id +' .feedrate').val());
+            // var feedrate  = parseInt($('#'+ this.id +' .feedrate').val());
             var zPlane    = $('#'+ this.id +' .z-plane').hasClass('active');
             
+            // var feedrate = '';
             
             var that = this;
             
@@ -227,24 +228,24 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 switch (true) {
                     case (barWidth > 33 && barWidth <= 66):
                         increment = '0.1';
-                        feedrate = '90';
+                        that.feedrate = '90';
                         barClass = 'progress-bar-success';
                         
                     break;
                     case (barWidth > 66 && barWidth < 95):
                         increment = '1';
-                        feedrate = '190'
+                        that.feedrate = '190'
                         barClass = 'progress-bar-warning';
                         
                     break;
                     case (barWidth  >= 95):
                         increment = '3';
-                        feedrate = '650';
+                        that.feedrate = '650';
                         barClass = 'progress-bar-danger';
-                        if (cmdCounter >= 5){
+                        if (this.cmdCounter >= 5){
                             
                             increment = '5';
-                            feedrate = '1000';
+                            that.feedrate = '1000';
                         }
                         
                         
@@ -277,45 +278,16 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 // console.log("JOG: moves", moves);
                 
             });
-        
-            // console.log('JOG: moves: ',moves);
-            
-            // jog is in stand-by position
-        /*
-        if ( coords.x.dir == 0 && coords.y.dir == 0){
-                
-                // send only one jog cancel command
-                // if (!jogCancel){
-                    this.cancelJog();
-                
-                //  jogCancel = true;
-               //}
-               
 
+            if (moves != ''){ 
+            
+                this.cmdCounter++;
+                var cmd = '$J=G91'+moves+'F'+this.feedrate+'\n';
+                this.sendCode(cmd);
+                // this.jogQueue.push(cmd);
+                // this.doQueue();
+                //  TODO CHECK THE BF planner queue 
             }
-            
-            else{
-            */
-            
-                if (moves != ''){ 
-                
-                    this.cmdCounter++;
-                    
-                    if (this.cmdCounter == 3){
-                       // feedrate = 2000;
-                       // this.cancelJog();
-                    }
-                
-                    var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
-                    
-                    
-                    this.sendCode(cmd);
-                    
-                    // this.jogQueue.push(cmd);
-                    // this.doQueue();
-                    
-                    
-                }
             // }
         },
         cancelJog: function(){
