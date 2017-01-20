@@ -288,8 +288,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 */
                 var maxFeedRate = 1000;
-                c.feedrate =  (Math.abs(c.dir) * maxFeedRate) / 255;
-                c.increment = that.calcDistance(c.feedrate);
+                c.feedrate =  ((Math.abs(c.dir) * maxFeedRate) / 255).toFixed(3);
+                c.increment = that.calcDistance(c.feedrate).toFixed(3);
 
                 
                 if (c.dir < 0) {
