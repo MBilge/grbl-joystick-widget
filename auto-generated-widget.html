@@ -184,8 +184,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         },
         
         checkResponse : function(recvline){
-          
-          
+
           
             if (!(recvline.dataline) || recvline.dataline == '\n' || !this.active) {
                 return true;
