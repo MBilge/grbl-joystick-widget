@@ -337,7 +337,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         //     feedrate =  (Math.abs(feedrate) * maxFeedRate) / 255;
             // var v =  f / 60;
             
-            var feedrate = Math.abs(jx) >= Math.abs(jx) ? fx : fy;
+            var feedrate = Math.abs(jx) >= Math.abs(jy) ? fx : fy;
             
 
             if (moves != '') {
