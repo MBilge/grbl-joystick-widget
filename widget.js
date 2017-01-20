@@ -194,19 +194,19 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 "x": {
                     "dir": 0,
                     "invert": false,
-                    "increment": 0,
+                    "increment": 0.000,
                     "feedrate" : 0
                 },
                 "y": {
                     "dir": 0,
                     "invert": false,
-                    "increment": 0,
+                    "increment": 0.000,
                     "feedrate" : 0
                 },
                 "z": {
                     "dir": 0,
                     "invert": false,
-                    "increment": 0,
+                    "increment": 0.000,
                     "feedrate" : 0
                 },
         },
@@ -291,7 +291,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 */
                 var maxFeedRate = 1000;
                 c.feedrate =  ((Math.abs(c.dir) * maxFeedRate) / 255).toFixed(3);
-                c.increment += that.calcDistance(c.feedrate).toFixed(3);
+                c.increment += parseFloat(that.calcDistance(c.feedrate).toFixed(3));
 
                 
                 if (c.dir < 0) {

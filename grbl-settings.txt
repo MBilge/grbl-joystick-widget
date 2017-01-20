@@ -32,3 +32,21 @@ $122=10.000
 $130=300.000
 $131=300.000
 $132=100.000
+
+
+
+/*   
+
+Stepper motor: 1.8° per step
+Stepper driver: 1/16 micro step
+Lead Screw Pitch: 4mm
+Pitch presets: 12mm per rotation
+Steps per mm: 800 (796.166)
+
+
+
+
+
+
+
+*/
