@@ -283,7 +283,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (jx != 0){
                 
                 var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
-                this.incX += this.calcDistance( fx / 60);
+                this.incX += parseFloat(this.calcDistance( fx / 60));
                 
                 moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX;
             }
@@ -292,7 +292,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (jy != 0){
                 
                 var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
-                this.incY += this.calcDistance( fy / 60);
+                this.incY += parseFloat(this.calcDistance( fy / 60));
                 moves +=  'Y' + ( jx < 0 ? '-' : '') + this.incY;
             }
             
@@ -587,7 +587,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     </div>
                 </div>
             </div> 
-            <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.27</span>
+            <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.28</span>
         </div>
         <div class="panel-body">
             <div class="settings well" style="display:none">
