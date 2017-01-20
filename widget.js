@@ -179,13 +179,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var dt = 0.04;      // 40 ms
             
             // calculate dt 
-            // var dt =  (v * v) / 2 * 10 * 14;
+            //
+            
+            var dt =  (v * v) / 2 * 10 * 14;
             
             // s : incremental distance of jog command in mm
             var s = ( v / 60 ) * dt;
             
             
-            return  parseFloat(s.toFixed(3));
+            return s;
         },
         
         regexLine: new RegExp("jog:([0-9-]+):([0-9-]+)", "i"),
@@ -227,7 +229,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 return;
             }
             var moves = "";
-            var maxFeedRate = 1000;
+            var maxFeedRate = 1500;
             
             // var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
 
@@ -245,7 +247,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
                 this.incY += this.calcDistance(fy);
                 
-                moves +=  'Y' + ( jy < 0 ? '-' : '') + this.incY;
+                moves +=  'Y' + ( jy < 0 ? '-' : '') + this.incY.toFixed(3);
             }
             
         
