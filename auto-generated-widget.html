@@ -217,8 +217,25 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
         cmdCounter: 0,
 
+        calcDistance : function(v){  // f = current value from joystick
+            
+         
+            // dt : estimated execution time of a single jog command in seconds. min > 10ms
+            var dt = 0.04;      // 40 ms
+            
+            // calculate dt 
+            // var dt =  (v * v) / 2 * 10 * 14;
+            
+            // s : incremental distance of jog command in mm
+            var s = v * dt;
+            
+            
+            return  s;
+        },
+        
         regexLine: new RegExp("jog:([0-9-]+):([0-9-]+)", "i"),
-
+         
+         
         checkRecvLine: function(recvline) {
 
             var result = this.regexLine.exec(recvline);
@@ -278,6 +295,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 var barWidth = (100 * Math.abs(c.dir) / 255);
                 var barClass = 'progress-bar-info';
 
+
+                /*
                 switch (true) {
                     case (barWidth > 33 && barWidth <= 66):
                         c.increment = '0.1';
@@ -313,6 +332,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         c.increment = '0.05';
                         c.feedrate = '50';
                 }
+                
+                */
+                c.increment = this.calcDistance(c.dir);
 
                 
                 if (c.dir < 0) {
@@ -327,7 +349,16 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             });
 
             // Whit two different feedrates for axis send command with the greater value
-            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir)) ? coords.x.feedrate : coords.y.feedrate;
+            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir)) ? coords.x.dir : coords.y.dir;
+            
+            
+             // maxFeedRate : mm/min value for the max jog feed rate
+            var maxFeedRate = 1000; 
+
+            // v : current jog feed rate in mm/sec, not mm/min. Less than or equal to max jog rate.
+            feedrate =  (Math.abs(feedrate) * (maxFeedRate  / 60)) / 255;
+            // var v =  f / 60;
+            
 
             if (moves != '') {
 
@@ -348,7 +379,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         cancelJog: function() {
 
             this.jogQueue = [];
-            this.sendCode('\x85' + '\n');
+            this.sendCode('\x85');
             
             // we should send also the % command?
             // this.sendCode('%'+'\n');
