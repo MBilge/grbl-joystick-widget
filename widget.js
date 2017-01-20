@@ -149,7 +149,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var result = reg.exec(recvline.dataline);
             if (result){
                 this.plannerBuffer = parseInt(result[1],10);
-                // console.log("JOG: buffer size / queue ", this.availableBuffer, this.jogQueue.length );
             }
             if (recvline.dataline.substring(0, 2) == "ok") {
                 this.doQueue();
@@ -157,12 +156,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         },
         doQueue: function() {
             if (this.jogQueue.length > 0) {
-                // if(this.availableBuffer > this.jogQueue[0].length + 1){
-                var cmd = this.jogQueue.shift();
-                this.sendCode(cmd);
-                //    this.availableBuffer -= cmd.length;
-                //    console.log("JOG: send code: ",cmd, cmd.length,  this.availableBuffer );
-                // }
+                if(this.plannerBuffer > 1){
+                    var cmd = this.jogQueue.shift();
+                    this.sendCode(cmd);
+                }
             }
         },
         availableBuffer: 0,
@@ -187,19 +184,19 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     "dir": result[1],
                     "invert": this.invert.xaxis,
                     "increment": '',
-                    feedrate: ''
+                    "feedrate" : ''
                 },
                 "y": {
                     "dir": result[2],
                     "invert": this.invert.yaxis,
                     "increment": '',
-                    feedrate: ''
+                    "feedrate" : ''
                 },
                 "z": {
                     "dir": result[2],
                     "invert": this.invert.zaxis,
                     "increment": '',
-                    feedrate: ''
+                    "feedrate" : ''
                 },
             };
 
@@ -226,8 +223,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
                 if (zPlane) {
                     if (i == 'x' || i == 'y') return true;
+                    
                 }
                 else {
+                    // exit if we are moving xy
                     if (i == 'z') return true;
                 }
 
@@ -250,7 +249,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     case (barWidth >= 95):
                         c.increment = '3';
                         c.feedrate = '650';
+                        
                         barClass = 'progress-bar-danger';
+                        
                         if (that.cmdCounter >= 5) {
 
                             c.increment = '5';
