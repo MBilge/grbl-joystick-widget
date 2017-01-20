@@ -11,7 +11,7 @@ char id[] = "jog";
 // default delay for sending messages
 int d; 
 int btn = 0;
-int normalDelay = 50;
+int normalDelay = 250;
 int sleepDelay = 5 * 1000; // send message every x seconds
 
 // range for sensitivity
@@ -43,8 +43,8 @@ void setup() {
 void loop() { 
   readInputs();
   checkInputs();
-  delay(60);
-  readInputs();
+
+
   Send();
 }
 
@@ -73,15 +73,25 @@ void checkInputs(){
 
  
   
-  if (x > range[0] && x < range[1] && y > range[0] && y < range[1]){
+  if (x == 0 && y == 0){
       // we are in stand-by mode
       // waiting x3 normalDelay before going in sleep mode
-      if ( millis() - lastCommand  > normalDelay * 2){
-        sleeping = true;
+      if ( millis() - lastCommand  > normalDelay ){
+         if (sleeping == false){
+          delay(100);
+          x=0;
+          y=0;
+          sendJson();
+         }
+         sleeping = true;
       }
   }
   else{
       // we are getting movements
+      if (sleeping == true){
+          delay(10);
+          readInputs();
+      }
       sleeping = false;
       lastCommand = millis();
   }
@@ -98,26 +108,16 @@ void readInputs(){
   y = analogRead(PINY); 
   y = (512 - y) / 2;
 
-  
+
+  if (x > range[0] && x < range[1]){
+    x=0;
+  }
+
+  if (y > range[0] && y < range[1]){
+    y=0;
+  }
 }
 
-
-void readInputsOK(){
-
-  x=0;
-  y=0;
-  for (int i = 1; i <= c; i++) {
-    x += analogRead(PINX);
-  }
-  x = -(512 - (x/c)) / 2;
-  
-  for (int i = 1; i <= c; i++) {
-    y += analogRead(PINY);
-  }
-  y = (512 - (y/c)) / 2;
-
-  
-}
 void sendJson(){
 
   
@@ -125,7 +125,7 @@ void sendJson(){
   
   // Serial.println( String("{\"Cmd\": \"Broadcast\", \"Msg\": {\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}}"));  
 
-//   Serial.println( String("broadcast {\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}"));  
+  // Serial.println( String("broadcast {\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}"));  
 
   // Serial.println( String("{\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}"));  
 
