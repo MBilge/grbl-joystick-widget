@@ -260,7 +260,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                             c.feedrate = '1000';
                         }
                         
-                        else if (that.cmdCounter >= 15) {
+                        if (that.cmdCounter >= 15) {
 
                             c.increment = '10';
                             c.feedrate = '1500';
@@ -282,14 +282,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
                     moves += axis + (c.invert ? '' : '-') + c.increment;
 
-                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass);
+                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass).html(c.increment +' '+c.feedrate);
 
                 }
                 else if (c.dir > 0) {
 
                     moves += axis + (c.invert ? '-' : '') + c.increment;
 
-                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass);
+                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass).html(c.increment +' '+c.feedrate);
                 }
 
                 // console.log("JOG: moves", moves);
@@ -318,8 +318,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // we should send also the % command?
             //  this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
-            $(".bar-pos").width(0).removeClass().addClass('progress-bar bar-pos');
-            $(".bar-neg").width(0).removeClass().addClass('progress-bar bar-neg');
+            $(".bar-pos").width(0).removeClass().addClass('progress-bar bar-pos').html('');
+            $(".bar-neg").width(0).removeClass().addClass('progress-bar bar-neg').html('');
 
             this.cmdCounter = 0;
         },
