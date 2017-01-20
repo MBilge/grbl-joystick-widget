@@ -205,7 +205,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var zPlane    = $('#'+ this.id +' .z-plane').hasClass('active');
             
             var feedrate = '';
-            
+            var that = this;
             
             
             $.each(coords,function(i,c){
@@ -239,7 +239,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         c.increment = '3';
                         c.feedrate = '650';
                         barClass = 'progress-bar-danger';
-                        if (this.cmdCounter >= 5){
+                        if (that.cmdCounter >= 5){
                             
                             c.increment = '5';
                             c.feedrate = '1000';
