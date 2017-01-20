@@ -302,20 +302,20 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         c.feedrate = '50';
                 }
                 
-                
-                $('#'+ that.id +' .increment').val(increment);
+                // to be corrected
+                //$('#'+ that.id +' .increment').val(c.increment);
             
                 
                 if (c.dir < 0){
                     
-                    moves += axis + ( c.invert ? '' : '-') + increment;
+                    moves += axis + ( c.invert ? '' : '-') + c.increment;
                     
                     $('.'+i+'-bar-container .bar-neg').width( barWidth + '%').removeClass().addClass('progress-bar bar-neg '+barClass);
                     
                 }
                 else if (c.dir > 0){
                     
-                    moves += axis + ( c.invert ? '-' : '') + increment;
+                    moves += axis + ( c.invert ? '-' : '') + c.increment;
                     
                     $('.'+i+'-bar-container .bar-pos').width( barWidth + '%').removeClass().addClass('progress-bar bar-pos '+barClass);
                 }
@@ -513,7 +513,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.6</span>
+            </div> <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.7</span>
         </div>
         <div class="panel-body">
             <!--button type="button" class="btn btn-xs btn-default btn-" style="margin: 4px 0;">Hello World 2</button-->

@@ -257,20 +257,20 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         c.feedrate = '50';
                 }
                 
-                
-                $('#'+ that.id +' .increment').val(increment);
+                // to be corrected
+                //$('#'+ that.id +' .increment').val(c.increment);
             
                 
                 if (c.dir < 0){
                     
-                    moves += axis + ( c.invert ? '' : '-') + increment;
+                    moves += axis + ( c.invert ? '' : '-') + c.increment;
                     
                     $('.'+i+'-bar-container .bar-neg').width( barWidth + '%').removeClass().addClass('progress-bar bar-neg '+barClass);
                     
                 }
                 else if (c.dir > 0){
                     
-                    moves += axis + ( c.invert ? '-' : '') + increment;
+                    moves += axis + ( c.invert ? '-' : '') + c.increment;
                     
                     $('.'+i+'-bar-container .bar-pos').width( barWidth + '%').removeClass().addClass('progress-bar bar-pos '+barClass);
                 }
