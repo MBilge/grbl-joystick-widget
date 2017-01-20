@@ -234,7 +234,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var that = this;
 
 
-            $.each(this.coords, function(i, c) {
+            $.each(that.coords, function(i, c) {
 
                 var axis = zPlane ? 'Z' : i.toUpperCase();
 
@@ -290,18 +290,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 */
                 var maxFeedRate = 1000;
-                c.feedrate =  ((Math.abs(c.dir) * maxFeedRate) / 255).toFixed(3);
-                c.increment += that.calcDistance(c.feedrate).toFixed(3);
+                that.c.feedrate =  ((Math.abs(that.c.dir) * maxFeedRate) / 255).toFixed(3);
+                that.c.increment += that.calcDistance(c.feedrate).toFixed(3);
 
                 
                 if (c.dir < 0) {
-                    moves += axis + (c.invert ? '' : '-') + c.increment;
-                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass).html(c.increment +' F'+c.feedrate);
+                    moves += axis + (that.c.invert ? '' : '-') + that.c.increment;
+                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass).html(that.c.increment +' F'+that.c.feedrate);
                 }
                 else if (c.dir > 0) {
 
-                    moves += axis + (c.invert ? '-' : '') + c.increment;
-                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass).html(c.increment +' F'+c.feedrate);
+                    moves += axis + (that.c.invert ? '-' : '') + that.c.increment;
+                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass).html(that.c.increment +' F'+that.c.feedrate);
                 }
             });
 
