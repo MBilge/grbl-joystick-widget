@@ -1,4 +1,4 @@
-/* global requirejs cprequire cpdefine chilipeppr THREE */
+/* global requirejs $ cprequire cprequire_test cpdefine chilipeppr THREE */
 // Defining the globals above helps Cloud9 not show warnings for those variables
 
 // ChiliPeppr Widget/Element Javascript
@@ -207,7 +207,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             var feedrate = '';
             
-            var that = this;
+            
             
             $.each(coords,function(i,c){
                 
@@ -221,7 +221,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 var barWidth = (100 * Math.abs(c.dir)  / 255); 
-                var increment = '';
                 var barClass = 'progress-bar-info';
                 
                 switch (true) {
@@ -233,7 +232,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     break;
                     case (barWidth > 66 && barWidth < 95):
                         c.increment = '1';
-                        c.feedrate = '190'
+                        c.feedrate = '190';
                         barClass = 'progress-bar-warning';
                         
                     break;
@@ -439,5 +438,5 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
         },
 
-    }
+    };
 });
