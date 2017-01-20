@@ -144,15 +144,13 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (!(recvline.dataline) || recvline.dataline == '\n' || !this.active) {
                 return true;
             }
-            /*  
-              var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");
-              var result = reg.exec(recvline.dataline);
-              if (result){
-                  // Bf:15,128 // planner buffer - serial rx buffer
-                  this.availableBuffer = parseInt(result[2]);
-                  console.log("JOG: buffer size / queue ", this.availableBuffer, this.jogQueue.length );
-              }
-              */
+            
+            var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");   // Bf:15,128 // planner buffer - serial rx buffer
+            var result = reg.exec(recvline.dataline);
+            if (result){
+                this.plannerBuffer = parseInt(result[1],10);
+                // console.log("JOG: buffer size / queue ", this.availableBuffer, this.jogQueue.length );
+            }
             if (recvline.dataline.substring(0, 2) == "ok") {
                 this.doQueue();
             }
@@ -168,10 +166,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             }
         },
         availableBuffer: 0,
-
+        plannerBuffer : 15, // Setting this as empty : 15 free blocks 
         jogQueue: [],
 
-
+        gCodeMove : 'G91',
+        
         jogCancel: false,
 
         cmdCounter: 0,
@@ -215,8 +214,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             var moves = "";
 
-            // var increment = parseFloat($('#'+ this.id +' .increment').val());
-            // var feedrate  = parseInt($('#'+ this.id +' .feedrate').val());
             var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
 
             var feedrate = '';
@@ -265,49 +262,40 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                             c.increment = '10';
                             c.feedrate = '1500';
                         }
-
-                        break;
-
-
-
+                    break;
                     default:
                         c.increment = '0.05';
                         c.feedrate = '50';
                 }
 
-                // to be corrected
-                //$('#'+ that.id +' .increment').val(c.increment);
-
+                
                 if (c.dir < 0) {
-
                     moves += axis + (c.invert ? '' : '-') + c.increment;
-
-                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass).html(c.increment +' '+c.feedrate);
-
+                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass).html(c.increment +' F'+c.feedrate);
                 }
                 else if (c.dir > 0) {
 
                     moves += axis + (c.invert ? '-' : '') + c.increment;
-
-                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass).html(c.increment +' '+c.feedrate);
+                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass).html(c.increment +' F'+c.feedrate);
                 }
-
-                // console.log("JOG: moves", moves);
-
             });
 
-
-
+            // Whit two different feedrates for axis send command with the greater value
             feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir)) ? coords.x.feedrate : coords.y.feedrate;
 
             if (moves != '') {
 
                 this.cmdCounter++;
-                var cmd = '$J=G91' + moves + 'F' + feedrate + '\n';
-                this.sendCode(cmd);
-                // this.jogQueue.push(cmd);
-                // this.doQueue();
-                //  TODO CHECK THE BF planner queue 
+                var cmd = '$J='+ this.gCodeMove + moves + 'F' + feedrate + '\n';
+                
+                if (this.plannerBuffer > 1){
+                    // direct send only if planner has free spaces
+                    this.sendCode(cmd);
+                }
+                else{
+                    this.jogQueue.push(cmd);
+                    this.doQueue();
+                }
             }
             // }
         },
@@ -315,9 +303,11 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             this.jogQueue = [];
             this.sendCode('\x85' + '\n');
+            
             // we should send also the % command?
-            //  this.sendCode('%'+'\n');
+            // this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
+            
             $(".bar-pos").width(0).removeClass().addClass('progress-bar bar-pos').html('');
             $(".bar-neg").width(0).removeClass().addClass('progress-bar bar-neg').html('');
 
@@ -412,7 +402,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             $('#' + this.id + ' .panel-footer').removeClass('hidden');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
-
+            $('#' + this.id + ' .btn-to-hide' ).removeClass('hidden');
             $(window).trigger("resize");
         },
 
@@ -421,7 +411,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             $('#' + this.id + ' .panel-footer').addClass('hidden');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
-
+            $('#' + this.id + ' .btn-to-hide' ).addClass('hidden');
             $(window).trigger("resize");
         },
         /**
