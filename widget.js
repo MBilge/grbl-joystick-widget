@@ -211,6 +211,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 },
         },
 
+        incX : 0.000,
+        incY : 0.000,
+        
         checkRecvLine: function(recvline) {
 
             var result = this.regexLine.exec(recvline);
@@ -235,7 +238,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             if (jx != 0){
                 
-                var fx = parseInt(Math.abs(jx) * maxFeedRate / 255 , 10);
+                var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
                 
                 moves += 'X'+ ( jx < 0 ? '-' : '') + this.calcDistance( fx / 60);
             }
@@ -243,9 +246,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             if (jy != 0){
                 
-                var fy = parseInt(Math.abs(jy) * maxFeedRate / 255, 10);
+                var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
                 
-                moves +=  'Y' + ( jx < 0 ? '-' : '') + this.calcDistance( fx / 60);
+                moves +=  'Y' + ( jx < 0 ? '-' : '') + this.calcDistance( fy / 60);
             }
             
         
