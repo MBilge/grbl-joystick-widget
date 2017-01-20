@@ -372,7 +372,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             this.incX = 0;
             this.incY = 0;
             // we should send also the % command?
-            // this.sendCode('%'+'\n');
+            this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
             
             $(".bar-pos").width(0).removeClass().addClass('progress-bar bar-pos').html('');
