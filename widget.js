@@ -217,8 +217,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 },
             };
 
-
-
             if (coords.x.dir == 0 && coords.y.dir == 0) {
                 this.cancelJog();
                 return;
@@ -289,7 +287,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 */
-                c.increment = this.calcDistance(c.dir);
+                c.increment = that.calcDistance(c.dir);
 
                 
                 if (c.dir < 0) {
