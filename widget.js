@@ -182,7 +182,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             //
             var v = vj / 60;
             
-            var dt =  (v * v) / 2 * 10 * 14;
+           // var dt =  (v * v) / 2 * 10 * 14;
             
             // s : incremental distance of jog command in mm
             var s =  v  * dt;
