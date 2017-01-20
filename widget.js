@@ -288,7 +288,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 */
                 var maxFeedRate = 1000;
-                c.feedrate =  (Math.abs(c.dir) * (maxFeedRate  / 60)) / 255;
+                c.feedrate =  (Math.abs(c.dir) * maxFeedRate) / 255;
                 c.increment = that.calcDistance(c.feedrate);
 
                 
@@ -304,14 +304,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             });
 
             // Whit two different feedrates for axis send command with the greater value
-            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir)) ? coords.x.dir : coords.y.dir;
+            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir)) ? coords.x.feedrate : coords.y.feedrate;
             
             
              // maxFeedRate : mm/min value for the max jog feed rate
-            var maxFeedRate = 1000; 
+           // var maxFeedRate = 1000; 
 
             // v : current jog feed rate in mm/sec, not mm/min. Less than or equal to max jog rate.
-            feedrate =  (Math.abs(feedrate) * (maxFeedRate  / 60)) / 255;
+        //     feedrate =  (Math.abs(feedrate) * maxFeedRate) / 255;
             // var v =  f / 60;
             
 
