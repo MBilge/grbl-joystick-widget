@@ -238,16 +238,17 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (jx != 0){
                 
                 var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
+                this.incX += this.calcDistance( fx / 60);
                 
-                moves += 'X'+ ( jx < 0 ? '-' : '') + this.calcDistance( fx / 60);
+                moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX;
             }
             
             
             if (jy != 0){
                 
                 var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
-                
-                moves +=  'Y' + ( jx < 0 ? '-' : '') + this.calcDistance( fy / 60);
+                this.incY += this.calcDistance( fy / 60);
+                moves +=  'Y' + ( jx < 0 ? '-' : '') + this.incY;
             }
             
         
@@ -362,9 +363,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             this.jogQueue = [];
             this.sendCode('\x85');
-            this.coords.x.increment =0;
-            this.coords.y.increment =0;
-            this.coords.z.increment =0;
+            this.incX = 0;
+            this.incY = 0;
             // we should send also the % command?
             // this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
