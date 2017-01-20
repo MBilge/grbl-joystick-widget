@@ -172,7 +172,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
         cmdCounter: 0,
 
-        calcDistance : function(v){  // f = current value from joystick
+        calcDistance : function(vj){  // f = current value from joystick
             
          
             // dt : estimated execution time of a single jog command in seconds. min > 10ms
@@ -180,14 +180,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             // calculate dt 
             //
+            var v = vj / 60;
             
             var dt =  (v * v) / 2 * 10 * 14;
             
             // s : incremental distance of jog command in mm
-            var s = ( v / 60 ) * dt;
+            var s =  v  * dt;
             
             
-            return s;
+            return parseFloat(s.toFixed(3));
         },
         
         regexLine: new RegExp("jog:([0-9-]+):([0-9-]+)", "i"),
