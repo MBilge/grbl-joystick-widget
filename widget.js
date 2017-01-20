@@ -245,7 +245,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 $('.x-bar-container .bar-'+( jx < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jx) / 255) + '%').removeClass().addClass('progress-bar bar-'+( jx < 0 ? 'neg' : 'pos') + ' '+barClass);
                 this.incX += this.calcDistance(fx);
                 
-                moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX;
+                moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX.toFixed(3);
             }
             
             
