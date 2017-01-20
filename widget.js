@@ -182,10 +182,10 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // var dt =  (v * v) / 2 * 10 * 14;
             
             // s : incremental distance of jog command in mm
-            var s = v * dt;
+            var s = ( v / 60 ) * dt;
             
             
-            return  s.toFixed(3);
+            return  parseFloat(s).toFixed(3);
         },
         
         regexLine: new RegExp("jog:([0-9-]+):([0-9-]+)", "i"),
@@ -234,7 +234,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (jx != 0){
                 
                 var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
-                this.incX += parseFloat(this.calcDistance( fx / 60)).toFixed(3);
+                this.incX += parseFloat(this.calcDistance(fx));
                 
                 moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX;
             }
@@ -243,7 +243,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (jy != 0){
                 
                 var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
-                this.incY += parseFloat(this.calcDistance( fy / 60)).toFixed(3);
+                this.incY += this.calcDistance(fy);
                 
                 moves +=  'Y' + ( jy < 0 ? '-' : '') + this.incY;
             }
