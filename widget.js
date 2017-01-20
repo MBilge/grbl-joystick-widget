@@ -4,7 +4,7 @@
 // ChiliPeppr Widget/Element Javascript
 
 requirejs.config({
-   
+
     paths: {
         // Example of how to define the key (you make up the key) and the URL
         // Make sure you DO NOT put the .js at the end of the URL
@@ -58,232 +58,252 @@ cprequire_test(["inline:com-chilipeppr-grbl-joystick"], function(myWidget) {
 // This is the main definition of your widget. Give it a unique name.
 cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other dependencies here */ ], function() {
     return {
-      
+
         id: "com-chilipeppr-grbl-joystick", // Make the id the same as the cpdefine id
         name: "GRBL Joystick", // The descriptive name of your widget.
         desc: "It's a Joystick... :-)", // A description of what your widget does
-        url: "(auto fill by runme.js)",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
+        url: "(auto fill by runme.js)", // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
         fiddleurl: "(auto fill by runme.js)", // The edit URL. This can be auto-filled by runme.js in Cloud9 if you'd like, or just define it on your own to help people know where they can edit/fork your widget
         githuburl: "(auto fill by runme.js)", // The backing github repo
-        testurl: "(auto fill by runme.js)",   // The standalone working widget so can view it working by itself
+        testurl: "(auto fill by runme.js)", // The standalone working widget so can view it working by itself
 
         publish: {
-              
+
         },
         subscribe: {
-          
+
         },
         foreignPublish: {
-            "/com-chilipeppr-widget-serialport/send" : "We send to the serial port certain commands like the initial configuration commands for the GRBL to be in the correct mode and to get initial statuses like planner buffers and XYZ coords. We also send the Emergency Stop and Resume of ! and ~"
+            "/com-chilipeppr-widget-serialport/send": "We send to the serial port certain commands like the initial configuration commands for the GRBL to be in the correct mode and to get initial statuses like planner buffers and XYZ coords. We also send the Emergency Stop and Resume of ! and ~"
         },
         foreignSubscribe: {
-            "/com-chilipeppr-interface-cnccontroller/status" : "status check before send commands",
-            "/com-chilipeppr-widget-serialport/recvline" : "When we get a dataline from serialport, process it and fire off generic CNC controller signals to the /com-chilipeppr-interface-cnccontroller channel.",
-            "/com-chilipeppr-widget-serialport/send" : "Subscribe to serial send and override so no other subscriptions receive command."
+            "/com-chilipeppr-interface-cnccontroller/status": "status check before send commands",
+            "/com-chilipeppr-widget-serialport/recvline": "When we get a dataline from serialport, process it and fire off generic CNC controller signals to the /com-chilipeppr-interface-cnccontroller channel.",
+            "/com-chilipeppr-widget-serialport/send": "Subscribe to serial send and override so no other subscriptions receive command."
         },
-       
+
         /**
          * All widgets should have an init method. It should be run by the
          * instantiating code like a workspace or a different widget.
          */
-        
 
-        active : false,
-         
+
+        active: false,
+
         init: function() {
-           
+
 
             // this.setupUiFromLocalStorage();
             this.btnSetup();
             this.forkSetup();
-            
-            
+
+
             // chilipeppr.subscribe('/com-chilipeppr-widget-serialport/onBroadcast', this, this.onBroadcast);
-            
+
             // chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
-                
-            
-            chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status){
-                
-               
-               this.status = status;
-               if (status == 'Jog' && this.counter == 0){
-                   // machine is moving and it's wrong. Send cancel jog command
-                   this.cancelJog();
-                   
-               }
-               if (status == 'Run'){
-                   
-                   this.active = false;
-               }
-               else{
-                   this.active = true;
-               }
-               
+
+
+            chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/status', this, function(status) {
+
+
+                this.status = status;
+                if (status == 'Jog' && this.counter == 0) {
+                    // machine is moving and it's wrong. Send cancel jog command
+                    this.cancelJog();
+
+                }
+                if (status == 'Run') {
+
+                    this.active = false;
+                }
+                else {
+                    this.active = true;
+                }
+
             });
-            
+
             chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, this.checkResponse);
             this.hideBody();
-            
+
         },
 
-        unSubscribeReceive : function(){
+        unSubscribeReceive: function() {
             chilipeppr.unsubscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
             this.active = false;
         },
-        subscribeReceive : function(){
-         
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);   
-            this.active = true;
-            
-        },
-        
-        checkResponse : function(recvline){
+        subscribeReceive: function() {
 
-          
+            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.checkRecvLine);
+            this.active = true;
+
+        },
+
+        checkResponse: function(recvline) {
+
+
             if (!(recvline.dataline) || recvline.dataline == '\n' || !this.active) {
                 return true;
             }
-          /*  
-            var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");
-            var result = reg.exec(recvline.dataline);
-            if (result){
-                // Bf:15,128 // planner buffer - serial rx buffer
-                this.availableBuffer = parseInt(result[2]);
-                console.log("JOG: buffer size / queue ", this.availableBuffer, this.jogQueue.length );
-            }
-            */
-            if(recvline.dataline.substring(0,2) == "ok"){
+            /*  
+              var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");
+              var result = reg.exec(recvline.dataline);
+              if (result){
+                  // Bf:15,128 // planner buffer - serial rx buffer
+                  this.availableBuffer = parseInt(result[2]);
+                  console.log("JOG: buffer size / queue ", this.availableBuffer, this.jogQueue.length );
+              }
+              */
+            if (recvline.dataline.substring(0, 2) == "ok") {
                 this.doQueue();
             }
         },
-        doQueue: function(){
-            if(this.jogQueue.length > 0){
-               // if(this.availableBuffer > this.jogQueue[0].length + 1){
-                    var cmd = this.jogQueue.shift();
-                    this.sendCode(cmd);
+        doQueue: function() {
+            if (this.jogQueue.length > 0) {
+                // if(this.availableBuffer > this.jogQueue[0].length + 1){
+                var cmd = this.jogQueue.shift();
+                this.sendCode(cmd);
                 //    this.availableBuffer -= cmd.length;
                 //    console.log("JOG: send code: ",cmd, cmd.length,  this.availableBuffer );
-               // }
+                // }
             }
         },
         availableBuffer: 0,
-        
-        jogQueue : [],
-    
-        
-        jogCancel : false,
-        
-        cmdCounter : 0,
-    
-        regexLine : new RegExp("{x: ([0-9-]+), y: ([0-9-]+)}", "i"),
-        
-        checkRecvLine: function(recvline){
-            
-            var result = this.regexLine.exec(recvline); 
+
+        jogQueue: [],
+
+
+        jogCancel: false,
+
+        cmdCounter: 0,
+
+        regexLine: new RegExp("{x: ([0-9-]+), y: ([0-9-]+)}", "i"),
+
+        checkRecvLine: function(recvline) {
+
+            var result = this.regexLine.exec(recvline);
             if (!result) return;
-                  
+
             var coords = {
-                "x" : { "dir" : result[1] , "invert" : this.invert.xaxis, "increment" : '', feedrate : '' },
-                "y" : { "dir" : result[2] , "invert" : this.invert.yaxis, "increment" : '', feedrate : ''  },
-                "z" : { "dir" : result[2] , "invert" : this.invert.zaxis, "increment" : '', feedrate : ''  },
+                "x": {
+                    "dir": result[1],
+                    "invert": this.invert.xaxis,
+                    "increment": '',
+                    feedrate: ''
+                },
+                "y": {
+                    "dir": result[2],
+                    "invert": this.invert.yaxis,
+                    "increment": '',
+                    feedrate: ''
+                },
+                "z": {
+                    "dir": result[2],
+                    "invert": this.invert.zaxis,
+                    "increment": '',
+                    feedrate: ''
+                },
             };
-            
-            
-            
-             if ( coords.x.dir == 0 && coords.y.dir == 0){
-                    this.cancelJog();
-                    return;
-             }
-            
-            
-            
+
+
+
+            if (coords.x.dir == 0 && coords.y.dir == 0) {
+                this.cancelJog();
+                return;
+            }
+
+
+
             var moves = "";
-            
+
             // var increment = parseFloat($('#'+ this.id +' .increment').val());
             // var feedrate  = parseInt($('#'+ this.id +' .feedrate').val());
-            var zPlane    = $('#'+ this.id +' .z-plane').hasClass('active');
-            
+            var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
+
             var feedrate = '';
             var that = this;
-            
-            
-            $.each(coords,function(i,c){
-                
+
+
+            $.each(coords, function(i, c) {
+
                 var axis = zPlane ? 'Z' : i.toUpperCase();
-                
+
                 if (zPlane) {
                     if (i == 'x' || i == 'y') return true;
                 }
-                else{
+                else {
                     if (i == 'z') return true;
                 }
-                
-                var barWidth = (100 * Math.abs(c.dir)  / 255); 
+
+                var barWidth = (100 * Math.abs(c.dir) / 255);
                 var barClass = 'progress-bar-info';
-                
+
                 switch (true) {
                     case (barWidth > 33 && barWidth <= 66):
                         c.increment = '0.1';
                         c.feedrate = '90';
                         barClass = 'progress-bar-success';
-                        
-                    break;
+
+                        break;
                     case (barWidth > 66 && barWidth < 95):
                         c.increment = '1';
                         c.feedrate = '190';
                         barClass = 'progress-bar-warning';
-                        
-                    break;
-                    case (barWidth  >= 95):
+
+                        break;
+                    case (barWidth >= 95):
                         c.increment = '3';
                         c.feedrate = '650';
                         barClass = 'progress-bar-danger';
-                        if (that.cmdCounter >= 5){
-                            
+                        if (that.cmdCounter >= 5) {
+
                             c.increment = '5';
                             c.feedrate = '1000';
                         }
                         
-                        
-                    break;
-                    
-                    
-                    
+                        if (that.cmdCounter >= 15) {
+
+                            c.increment = '10';
+                            c.feedrate = '1500';
+                        }
+
+                        break;
+
+
+
                     default:
                         c.increment = '0.05';
                         c.feedrate = '50';
                 }
-                
+
                 // to be corrected
                 //$('#'+ that.id +' .increment').val(c.increment);
-        
-                if (c.dir < 0){
-                    
-                    moves += axis + ( c.invert ? '' : '-') + c.increment;
-                    
-                    $('.'+i+'-bar-container .bar-neg').width( barWidth + '%').removeClass().addClass('progress-bar bar-neg '+barClass);
-                    
-                }
-                else if (c.dir > 0){
-                    
-                    moves += axis + ( c.invert ? '-' : '') + c.increment;
-                    
-                    $('.'+i+'-bar-container .bar-pos').width( barWidth + '%').removeClass().addClass('progress-bar bar-pos '+barClass);
-                }
-                
-                // console.log("JOG: moves", moves);
-                
-            });
-            
-            
-            
-            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir))  ? coords.x.feedrate: coords.y.feedrate;
 
-            if (moves != ''){ 
-            
+                if (c.dir < 0) {
+
+                    moves += axis + (c.invert ? '' : '-') + c.increment;
+
+                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass);
+
+                }
+                else if (c.dir > 0) {
+
+                    moves += axis + (c.invert ? '-' : '') + c.increment;
+
+                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass);
+                }
+
+                // console.log("JOG: moves", moves);
+
+            });
+
+
+
+            feedrate = (Math.abs(coords.x.dir) >= Math.abs(coords.y.dir)) ? coords.x.feedrate : coords.y.feedrate;
+
+            if (moves != '') {
+
                 this.cmdCounter++;
-                var cmd = '$J=G91'+moves+'F'+feedrate+'\n';
+                var cmd = '$J=G91' + moves + 'F' + feedrate + '\n';
                 this.sendCode(cmd);
                 // this.jogQueue.push(cmd);
                 // this.doQueue();
@@ -291,35 +311,37 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             }
             // }
         },
-        cancelJog: function(){
-            
+        cancelJog: function() {
+
             this.jogQueue = [];
-            this.sendCode('\x85'+'\n');
+            this.sendCode('\x85' + '\n');
             // we should send also the % command?
-           //  this.sendCode('%'+'\n');
+            //  this.sendCode('%'+'\n');
             // chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", this.name,"Jog Cancel Sent" + that.id, 1000);
-            $(".bar-pos").width( 0 ).removeClass().addClass('progress-bar bar-pos');
-            $(".bar-neg").width( 0 ).removeClass().addClass('progress-bar bar-neg');
-               
+            $(".bar-pos").width(0).removeClass().addClass('progress-bar bar-pos');
+            $(".bar-neg").width(0).removeClass().addClass('progress-bar bar-neg');
+
             this.cmdCounter = 0;
         },
-        sendCode: function(code){
-            
+        sendCode: function(code) {
+
             chilipeppr.publish("/com-chilipeppr-widget-serialport/send", code);
-            
+
         },
-        invert :{
+        invert: {
             "xaxis-class": {
-              "normal" : "glyphicon glyphicon-circle-arrow-right", "invert": "glyphicon glyphicon-circle-arrow-left"
+                "normal": "glyphicon glyphicon-circle-arrow-right",
+                "invert": "glyphicon glyphicon-circle-arrow-left"
             },
-            "yaxis-class" : {
-              "normal" : "glyphicon glyphicon-circle-arrow-up", "invert": "glyphicon glyphicon-circle-arrow-down"
+            "yaxis-class": {
+                "normal": "glyphicon glyphicon-circle-arrow-up",
+                "invert": "glyphicon glyphicon-circle-arrow-down"
             },
-            "xaxis" : false,
-            "yaxis" : false,
-            "zaxis" : false
-         },
-      
+            "xaxis": false,
+            "yaxis": false,
+            "zaxis": false
+        },
+
         btnSetup: function() {
             var that = this;
             $('#' + this.id + ' .hidebody').click(function(evt) {
@@ -335,45 +357,45 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     that.unSubscribeReceive();
                 }
             });
-            $('#'+ this.id +' .invert-chk').click(function() {
+            $('#' + this.id + ' .invert-chk').click(function() {
                 var axis = $(this).data("axis");
-                that.invert[axis+'axis'] = $(this).is(":checked");
-                
+                that.invert[axis + 'axis'] = $(this).is(":checked");
+
             });
-            $('#'+ this.id +' .z-plane').click(function(){
-                
-               if (!$(this).hasClass('active')){
+            $('#' + this.id + ' .z-plane').click(function() {
+
+                if (!$(this).hasClass('active')) {
                     $(this).addClass('active');
                     $('.xy-plane').removeClass('active');
                     $('.y-bar-container .axis').html('Z');
                     $('.x-bar-container').hide();
-               } 
-               else{
+                }
+                else {
                     $(this).removeClass('active');
                     $('.x-bar-container').show();
                     $('.y-bar-container .axis').html('Y');
-               }
-                
+                }
+
             });
-            
-             $('#'+ this.id +' .xy-plane').click(function(){
-                 
-                if (!$(this).hasClass('active')){
+
+            $('#' + this.id + ' .xy-plane').click(function() {
+
+                if (!$(this).hasClass('active')) {
                     $(this).addClass('active');
                     $('.z-plane').removeClass('active');
                     $('.x-bar-container').show();
                     $('.y-bar-container .axis').html('Y');
-               } 
-               else{
+                }
+                else {
                     $(this).removeClass('active');
                     $('.y-bar-container .axis').html('Z');
                     $('.x-bar-container').hide();
-               }
-             });
-            
-             $('#'+ this.id +' .show-settings').click(function(){
-                 $('.settings').toggle();
-             });
+                }
+            });
+
+            $('#' + this.id + ' .show-settings').click(function() {
+                $('.settings').toggle();
+            });
             // Ask bootstrap to scan all the buttons in the widget to turn
             // on popover menus
             $('#' + this.id + ' .btn').popover({
@@ -384,22 +406,22 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 container: 'body'
             });
         },
-      
+
         showBody: function(evt) {
             $('#' + this.id + ' .panel-body').removeClass('hidden');
             $('#' + this.id + ' .panel-footer').removeClass('hidden');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
-         
+
             $(window).trigger("resize");
         },
-     
+
         hideBody: function(evt) {
             $('#' + this.id + ' .panel-body').addClass('hidden');
             $('#' + this.id + ' .panel-footer').addClass('hidden');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
-           
+
             $(window).trigger("resize");
         },
         /**
