@@ -227,26 +227,30 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 switch (true) {
                     case (barWidth > 33 && barWidth <= 66):
                         increment = '0.1';
+                        feedrate = '90';
                         barClass = 'progress-bar-success';
                         
                     break;
                     case (barWidth > 66 && barWidth < 95):
                         increment = '1';
+                        feedrate = '190'
                         barClass = 'progress-bar-warning';
                         
                     break;
                     case (barWidth  >= 95):
                         increment = '3';
-                         if (this.cmdCounter >= 5) {
-                             feedrate = 1000;
-                         }
-                         if (this.cmdCounter >= 15){
-                             increment = 10;
-                             feedrate = 2000;
-                         }
+                        feedrate = '650';
                         barClass = 'progress-bar-danger';
+                        if (cmdCounter >= 5){
+                            
+                            increment = '5';
+                            feedrate = '1000';
+                        }
+                        
                         
                     break;
+                    
+                    
                     
                     default:
                         increment = '0.01';
