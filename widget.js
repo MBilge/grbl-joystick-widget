@@ -176,7 +176,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
          
             // dt : estimated execution time of a single jog command in seconds. min > 10ms
-            var dt = 0.04;      // 40 ms
+            //var dt = 0.04;      // 40 ms
+            
+            var dt = parseFloat($("#jog-dt").val());
             
             // calculate dt 
             //
@@ -230,13 +232,18 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 return;
             }
             var moves = "";
-            var maxFeedRate = 1500;
+            //var maxFeedRate = 1500;
+            var maxFeedRate = parseInt(("#jog-max").val(),10);
+            
+            var barClass = 'progress-bar-info';
+
             
             // var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
 
             if (jx != 0){
                 
                 var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
+                $('.x-bar-container .bar-'+( jx < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jx) / 255) + '%').removeClass().addClass('progress-bar bar-'+( jx < 0 ? 'neg' : 'pos') + ' '+barClass);
                 this.incX += this.calcDistance(fx);
                 
                 moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX;
@@ -247,7 +254,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
                 this.incY += this.calcDistance(fy);
-                
+                $('.y-bar-container .bar-'+( jy < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jy) / 255) + '%').removeClass().addClass('progress-bar bar-'+( jy < 0 ? 'neg' : 'pos') + ' '+barClass);
                 moves +=  'Y' + ( jy < 0 ? '-' : '') + this.incY.toFixed(3);
             }
             
