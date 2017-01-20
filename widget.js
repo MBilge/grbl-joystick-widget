@@ -182,7 +182,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // var dt =  (v * v) / 2 * 10 * 14;
             
             // s : incremental distance of jog command in mm
-            var s = (v/60) * dt;
+            var s = v * dt;
             
             
             return  s.toFixed(3);
@@ -218,27 +218,23 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             var result = this.regexLine.exec(recvline);
             if (!result) return;
-            this.coords.x.dir = parseInt(result[1],10);
-            this.coords.y.dir = parseInt(result[2],10);
-            this.coords.z.dir = parseInt(result[2],10);
+            var jx = parseInt(result[1],10);
+            var jy = parseInt(result[2],10);
+          //  var jz = parseInt(result[2],10);
            
-            if (this.coords.x.dir == 0 && this.coords.y.dir == 0) {
+            if (jx == 0 && jy == 0) {
                 this.cancelJog();
                 return;
             }
-            var jx = result[1];
-            var jy = result[2];
-            var jz = result[3];
-
             var moves = "";
             var maxFeedRate = 1000;
             
-            var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
+            // var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
 
             if (jx != 0){
                 
                 var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
-                this.incX += parseFloat(this.calcDistance( fx / 60));
+                this.incX += parseFloat(this.calcDistance( fx / 60)).toFixed(3);
                 
                 moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX;
             }
@@ -247,8 +243,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (jy != 0){
                 
                 var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
-                this.incY += parseFloat(this.calcDistance( fy / 60));
-                moves +=  'Y' + ( jx < 0 ? '-' : '') + this.incY;
+                this.incY += parseFloat(this.calcDistance( fy / 60)).toFixed(3);
+                
+                moves +=  'Y' + ( jy < 0 ? '-' : '') + this.incY;
             }
             
         
