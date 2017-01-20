@@ -259,8 +259,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 // to be corrected
                 //$('#'+ that.id +' .increment').val(c.increment);
-            
-                
+        
                 if (c.dir < 0){
                     
                     moves += axis + ( c.invert ? '' : '-') + c.increment;
