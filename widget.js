@@ -185,7 +185,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             var s = (v/60) * dt;
             
             
-            return  s;
+            return  s.toFixed(3);
         },
         
         regexLine: new RegExp("jog:([0-9-]+):([0-9-]+)", "i"),
@@ -224,12 +224,33 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 return;
             }
 
-
+            var jx = result[1];
+            var jy = result[2];
+            var jz = result[3];
 
             var moves = "";
-
+            var maxFeedRate = 1000;
+            
             var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
 
+            if (jx != 0){
+                
+                var fx = parseInt(Math.abs(jx) * maxFeedRate / 255 , 10);
+                
+                moves += 'X'+ ( jx < 0 ? '-' : '') + this.calcDistance( fx / 60);
+            }
+            
+            
+            if (jy != 0){
+                
+                var fy = parseInt(Math.abs(jy) * maxFeedRate / 255, 10);
+                
+                moves +=  'Y' + ( jx < 0 ? '-' : '') + this.calcDistance( fx / 60);
+            }
+            
+        
+        
+            /*
             var feedrate = '';
             var that = this;
 
@@ -289,8 +310,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
                 
                 */
-                var maxFeedRate = 1000;
-                c.feedrate =  ((Math.abs(c.dir) * maxFeedRate) / 255).toFixed(3);
+                
+               /* c.feedrate =  ((Math.abs(c.dir) * maxFeedRate) / 255).toFixed(3);
                 c.increment += parseFloat(that.calcDistance(c.feedrate).toFixed(3));
 
                 
@@ -308,13 +329,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             // Whit two different feedrates for axis send command with the greater value
             feedrate = (Math.abs(this.coords.x.dir) >= Math.abs(this.coords.y.dir)) ? this.coords.x.feedrate : this.coords.y.feedrate;
             
-            
+            */
              // maxFeedRate : mm/min value for the max jog feed rate
            // var maxFeedRate = 1000; 
 
             // v : current jog feed rate in mm/sec, not mm/min. Less than or equal to max jog rate.
         //     feedrate =  (Math.abs(feedrate) * maxFeedRate) / 255;
             // var v =  f / 60;
+            
+            var feedrate = fx >= fy ? fx : fy;
             
 
             if (moves != '') {
