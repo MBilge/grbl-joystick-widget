@@ -43,35 +43,20 @@ void setup() {
 void loop() { 
   readInputs();
   checkInputs();
-
-
-  Send();
+  checkSend();
 }
 
-void Send(){
+void checkSend(){
 
-   if (sleeping){
-    //if (millis() - lastSent  > sleepDelay){
-    //    sendJson();
-    //    lastSent = millis();
-    //} 
-   
-  }
-  else{
+  if (!sleeping){
     if (millis() - lastSent  > normalDelay){
-      
-     
-       
-      
-          sendJson();
-          lastSent = millis();
-     
+          sendSerial();
+          lastSent = millis();   
     }
   }
 }
-void checkInputs(){
 
- 
+void checkInputs(){
   
   if (x == 0 && y == 0){
       // we are in stand-by mode
@@ -81,7 +66,7 @@ void checkInputs(){
           delay(100);
           x=0;
           y=0;
-          sendJson();
+          sendSerial();
          }
          sleeping = true;
       }
@@ -89,6 +74,7 @@ void checkInputs(){
   else{
       // we are getting movements
       if (sleeping == true){
+          // delay to avoid firing only one axis when we are moving two
           delay(10);
           readInputs();
       }
@@ -98,36 +84,28 @@ void checkInputs(){
 }
 
 void readInputs(){
-
- 
-    
+      
   x = analogRead(PINX);
   x = -(512 - x) / 2;
-  
-  
+
   y = analogRead(PINY); 
   y = (512 - y) / 2;
-
 
   if (x > range[0] && x < range[1]){
     x=0;
   }
-
   if (y > range[0] && y < range[1]){
     y=0;
   }
+
 }
-
-void sendJson(){
-
+void sendSerial(){
   
-  
+  Serial.println("jog:"+String(x)+":"+String(y));
   
   // Serial.println( String("{\"Cmd\": \"Broadcast\", \"Msg\": {\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}}"));  
-
   // Serial.println( String("broadcast {\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}"));  
-
   // Serial.println( String("{\"id\": ")+ String(id) + String(", \"x\": ") + String(x) + String(", \"y\": ")+ String(y) + String("}"));  
+  // Serial.println("{x: "+ String(x) + ", y: "+ String(y) + "}");  
 
-  Serial.println("{x: "+ String(x) + ", y: "+ String(y) + "}");  
 }
