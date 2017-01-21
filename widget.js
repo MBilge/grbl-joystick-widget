@@ -218,32 +218,32 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
         incX : 0.000,
         incY : 0.000,
-        
+       
         checkRecvLine: function(recvline) {
 
             var result = this.regexLine.exec(recvline);
             if (!result) return;
             var jx = parseInt(result[1],10);
             var jy = parseInt(result[2],10);
-          //  var jz = parseInt(result[2],10);
+           
            
             if (jx == 0 && jy == 0) {
                 this.cancelJog();
                 return;
             }
             var moves = "";
-            //var maxFeedRate = 1500;
             var maxFeedRate = parseInt($("#jog-max").val(),10);
+            var barClass = 'progress-bar-success';
             
-            var barClass = 'progress-bar-info';
+            
+            var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
+
 
             
-            // var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
-
-            if (jx != 0){
+            if (jx != 0  && !zPlane){
                 
                 var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
-                $('.x-bar-container .bar-'+( jx < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jx) / 255) + '%').removeClass().addClass('progress-bar bar-'+( jx < 0 ? 'neg' : 'pos') + ' '+barClass);
+                $('.x-bar-container .bar-'+( jx < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jx) / 255) + '%'); // .removeClass().addClass('progress-bar bar-'+( jx < 0 ? 'neg' : 'pos') + ' '+barClass);
                 this.incX += this.calcDistance(fx);
                 
                 moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX.toFixed(3);
@@ -254,10 +254,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 
                 var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
                 this.incY += this.calcDistance(fy);
-                $('.y-bar-container .bar-'+( jy < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jy) / 255) + '%').removeClass().addClass('progress-bar bar-'+( jy < 0 ? 'neg' : 'pos') + ' '+barClass);
-                moves +=  'Y' + ( jy < 0 ? '-' : '') + this.incY.toFixed(3);
+                $('.y-bar-container .bar-'+( jy < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jy) / 255) + '%'); // .removeClass().addClass('progress-bar bar-'+( jy < 0 ? 'neg' : 'pos') + ' '+barClass);
+                
+                moves += ( zPlane ? 'Z' : 'Y') + ( jy < 0 ? '-' : '') + this.incY.toFixed(3);
             }
             
+        
+            
+        
         
         
             /*
