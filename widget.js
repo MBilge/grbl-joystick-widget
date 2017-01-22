@@ -188,7 +188,12 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
        
         incX : 0.000,
         incY : 0.000,
-       
+        
+        invertX : false,
+        invertY: false,
+        invertZ: false,
+        zPlane : false,
+        
         checkRecvLine: function(recvline) {
 
             var result = this.regexLine.exec(recvline);
@@ -204,32 +209,47 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             
             var moves = "";
             var maxFeedRate = parseInt($("#jog-max").val(),10);
-            var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
             
-
-            if (jx != 0  && !zPlane){
-                
-                var jxpos = Math.abs(jx);
+            var jxpos = Math.abs(jx);
+            var jypos = Math.abs(jy);
+            
+            
+            if (jx != 0  && !this.zPlane){
+            
                 var fx = parseInt( jxpos * maxFeedRate / 255 , 10);
                 $('.x-bar-container .bar-'+( jx < 0 ? 'neg' : 'pos')).width( (100 * jxpos / 255) + '%'); 
                 this.incX += this.calcDistance(fx);
+            
+                var xSign = this.invertX ? ( jx < 0 ? '' : '-') : ( jx < 0 ? '-' : '');
                 
-                moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX.toFixed(3);
+                moves += 'X'+ xSign + this.incX.toFixed(3);
             }
 
  
             if (jy != 0){
                 
-                var jypos = Math.abs(jy);
+                
                 var fy = parseInt( jypos * maxFeedRate / 255, 10);
                 this.incY += this.calcDistance(fy);
                 $('.y-bar-container .bar-'+( jy < 0 ? 'neg' : 'pos')).width( (100 * jypos / 255) + '%');
                 
-                moves += ( zPlane ? 'Z' : 'Y') + ( jy < 0 ? '-' : '') + this.incY.toFixed(3);
+                
+                
+                if (this.zPlane){
+                
+                    var zSign = this.invertZ ? ( jy < 0 ? '' : '-') : ( jy < 0 ? '-' : '');
+                    moves += 'Z' + zSign + this.incY.toFixed(3);
+                }
+                else{
+                    var ySign = this.invertY ? ( jy < 0 ? '' : '-') : ( jy < 0 ? '-' : '');
+                    moves += 'Y' + ySign + this.incY.toFixed(3);    
+                    
+                }
+                
             }
             
             var feedrate = jxpos >= jypos ? fx : fy;
-            if (zPlane) feedrate = fy;
+            if (this.zPlane) feedrate = fy;
 
             if (moves != '') {
                 this.cmdCounter++;
@@ -273,11 +293,14 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 }
             });
             $('#' + this.id + ' .invert-chk').click(function() {
-                var axis = $(this).data("axis");
-                that.invert[axis + 'axis'] = $(this).is(":checked");
-
+                that['invert'+$(this).data("axis")] = $(this).is(":checked");
             });
+            
+            
+            
             $('#' + this.id + ' .z-plane').click(function() {
+                
+                    that.zPlane = true;
 
                 if (!$(this).hasClass('active')) {
                     $(this).addClass('active');
@@ -295,6 +318,8 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             $('#' + this.id + ' .xy-plane').click(function() {
 
+                that.zPlane = false;
+                 
                 if (!$(this).hasClass('active')) {
                     $(this).addClass('active');
                     $('.z-plane').removeClass('active');
