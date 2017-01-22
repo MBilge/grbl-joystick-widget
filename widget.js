@@ -207,6 +207,15 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 return;
             }
             
+            if (jx == 1 && jy == 1){
+                
+                if (this.zPlane)
+                    $('#' + this.id + ' .xy-plane').click();
+                else
+                    $('#' + this.id + ' .z-plane').click();
+                return;
+            }
+            
             var moves = "";
             var maxFeedRate = parseInt($("#jog-max").val(),10);
             

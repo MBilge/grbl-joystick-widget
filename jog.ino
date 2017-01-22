@@ -1,21 +1,20 @@
 
-#define PINX A0
-#define PINY A1
+#define PINY A0
+#define PINX A1
 
 
 // id for json
 char id[] = "jog";
 
-
-
 // default delay for sending messages
 int d; 
 int btn = 0;
-int normalDelay = 250;
-int sleepDelay = 5 * 1000; // send message every x seconds
+int normalDelay = 200; // send jog position every x milliseconds
+int sleepDelay = 0.5 * 1000; // send x=0 y=0 message every x seconds
+int deepSleepDelay = 10 * 1000; // stop sending 
 
 // range for sensitivity
-int range[] = {-18, 18};
+int range[] = {-16, 16};
 
 int x;
 int y;
@@ -60,22 +59,32 @@ void checkInputs(){
   
   if (x == 0 && y == 0){
       // we are in stand-by mode
-      // waiting x3 normalDelay before going in sleep mode
-      if ( millis() - lastCommand  > normalDelay ){
-         if (sleeping == false){
-          delay(100);
-          x=0;
-          y=0;
+      // waiting normalDelay before going in sleep mode
+      if (sleeping == false){
+          delay(50);
           sendSerial();
-         }
-         sleeping = true;
-      }
+         
+     }
+
+     if (millis() - lastSent > deepSleepDelay){
+
+          // do not send
+          
+     }
+     else if ( millis() - lastCommand  > sleepDelay ){
+         
+
+          sendSerial();
+          lastCommand = millis();
+        
+    }
+    sleeping = true;   
   }
   else{
       // we are getting movements
       if (sleeping == true){
           // delay to avoid firing only one axis when we are moving two
-          delay(10);
+          delay(20);
           readInputs();
       }
       sleeping = false;
@@ -85,11 +94,11 @@ void checkInputs(){
 
 void readInputs(){
       
-  x = analogRead(PINX);
-  x = -(512 - x) / 2;
-
-  y = analogRead(PINY); 
+  y = analogRead(PINY);
   y = (512 - y) / 2;
+
+  x = analogRead(PINX); 
+  x = (512 - x) / 2;
 
   if (x > range[0] && x < range[1]){
     x=0;
