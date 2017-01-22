@@ -190,7 +190,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                 return true;
             }
             
-            var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");   // Bf:15,128 // planner buffer - serial rx buffer
+           /* var reg = new RegExp("\\|Bf:([0-9]+),([0-9]+)\\|","i");   // Bf:15,128 // planner buffer - serial rx buffer
             var result = reg.exec(recvline.dataline);
             if (result){
                 this.plannerBuffer = parseInt(result[1],10);
@@ -198,6 +198,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             if (recvline.dataline.substring(0, 2) == "ok") {
               //  this.doQueue();
             }
+            */
         },
         doQueue: function() {
          
@@ -211,56 +212,25 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
         availableBuffer: 0,
         plannerBuffer : 15, // Setting this as empty : 15 free blocks 
         jogQueue: [],
-
-        gCodeMove : 'G91',
-        
         jogCancel: false,
-
         cmdCounter: 0,
-
-        calcDistance : function(vj){  // f = current value from joystick
+        calcDistance : function(vj){  // vj = current value from joystick
             
-         
             // dt : estimated execution time of a single jog command in seconds. min > 10ms
-            //var dt = 0.04;      // 40 ms
             var dt = parseFloat($("#jog-dt").val());
-            
-            // calculate dt 
-            //
+           
+            // var dt =  (v * v) / 2 * 10 * 14; 
             var v = vj / 60;
-            
-           // var dt =  (v * v) / 2 * 10 * 14;
             
             // s : incremental distance of jog command in mm
             var s =  v  * dt;
-            
             
             return parseFloat(s.toFixed(3));
         },
         
         regexLine: new RegExp("jog:([0-9-]+):([0-9-]+)", "i"),
          
-        coords : {
-                "x": {
-                    "dir": 0,
-                    "invert": false,
-                    "increment": 0.000,
-                    "feedrate" : 0
-                },
-                "y": {
-                    "dir": 0,
-                    "invert": false,
-                    "increment": 0.000,
-                    "feedrate" : 0
-                },
-                "z": {
-                    "dir": 0,
-                    "invert": false,
-                    "increment": 0.000,
-                    "feedrate" : 0
-                },
-        },
-
+       
         incX : 0.000,
         incY : 0.000,
        
@@ -268,152 +238,49 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
 
             var result = this.regexLine.exec(recvline);
             if (!result) return;
+            
             var jx = parseInt(result[1],10);
             var jy = parseInt(result[2],10);
-           
-           
+            
             if (jx == 0 && jy == 0) {
                 this.cancelJog();
                 return;
             }
+            
             var moves = "";
             var maxFeedRate = parseInt($("#jog-max").val(),10);
-            var barClass = 'progress-bar-success';
-            
-            
             var zPlane = $('#' + this.id + ' .z-plane').hasClass('active');
-
-
             
+
             if (jx != 0  && !zPlane){
                 
-                var fx = parseInt( (Math.abs(jx) * maxFeedRate) / 255 , 10);
-                $('.x-bar-container .bar-'+( jx < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jx) / 255) + '%'); // .removeClass().addClass('progress-bar bar-'+( jx < 0 ? 'neg' : 'pos') + ' '+barClass);
+                var jxpos = Math.abs(jx);
+                var fx = parseInt( jxpos * maxFeedRate / 255 , 10);
+                $('.x-bar-container .bar-'+( jx < 0 ? 'neg' : 'pos')).width( (100 * jxpos / 255) + '%'); 
                 this.incX += this.calcDistance(fx);
                 
                 moves += 'X'+ ( jx < 0 ? '-' : '') + this.incX.toFixed(3);
             }
-            
-            
+
+ 
             if (jy != 0){
                 
-                var fy = parseInt( (Math.abs(jy) * maxFeedRate / 255), 10);
+                var jypos = Math.abs(jy);
+                var fy = parseInt( jypos * maxFeedRate / 255, 10);
                 this.incY += this.calcDistance(fy);
-                $('.y-bar-container .bar-'+( jy < 0 ? 'neg' : 'pos')).width( (100 * Math.abs(jy) / 255) + '%'); // .removeClass().addClass('progress-bar bar-'+( jy < 0 ? 'neg' : 'pos') + ' '+barClass);
+                $('.y-bar-container .bar-'+( jy < 0 ? 'neg' : 'pos')).width( (100 * jypos / 255) + '%');
                 
                 moves += ( zPlane ? 'Z' : 'Y') + ( jy < 0 ? '-' : '') + this.incY.toFixed(3);
             }
             
-        
-            
-        
-        
-        
-            /*
-            var feedrate = '';
-            var that = this;
-
-
-            $.each(that.coords, function(i, c) {
-
-                var axis = zPlane ? 'Z' : i.toUpperCase();
-
-                if (zPlane) {
-                    if (i == 'x' || i == 'y') return true;
-                    
-                }
-                else {
-                    // exit if we are moving xy
-                    if (i == 'z') return true;
-                }
-
-                var barWidth = (100 * Math.abs(c.dir) / 255);
-                var barClass = 'progress-bar-info';
-
-
-                /*
-                switch (true) {
-                    case (barWidth > 33 && barWidth <= 66):
-                        c.increment = '0.1';
-                        c.feedrate = '90';
-                        barClass = 'progress-bar-success';
-
-                        break;
-                    case (barWidth > 66 && barWidth < 95):
-                        c.increment = '1';
-                        c.feedrate = '190';
-                        barClass = 'progress-bar-warning';
-
-                        break;
-                    case (barWidth >= 95):
-                        c.increment = '3';
-                        c.feedrate = '650';
-                        
-                        barClass = 'progress-bar-danger';
-                        
-                        if (that.cmdCounter >= 5) {
-
-                            c.increment = '5';
-                            c.feedrate = '1000';
-                        }
-                        
-                        if (that.cmdCounter >= 15) {
-
-                            c.increment = '10';
-                            c.feedrate = '1500';
-                        }
-                    break;
-                    default:
-                        c.increment = '0.05';
-                        c.feedrate = '50';
-                }
-                
-                */
-                
-               /* c.feedrate =  ((Math.abs(c.dir) * maxFeedRate) / 255).toFixed(3);
-                c.increment += parseFloat(that.calcDistance(c.feedrate).toFixed(3));
-
-                
-                if (c.dir < 0) {
-                    moves += axis + (c.invert ? '' : '-') + c.increment;
-                    $('.' + i + '-bar-container .bar-neg').width(barWidth + '%').removeClass().addClass('progress-bar bar-neg ' + barClass).html(c.increment +' F'+c.feedrate);
-                }
-                else if (c.dir > 0) {
-
-                    moves += axis + (c.invert ? '-' : '') + c.increment;
-                    $('.' + i + '-bar-container .bar-pos').width(barWidth + '%').removeClass().addClass('progress-bar bar-pos ' + barClass).html(c.increment +' F'+c.feedrate);
-                }
-            });
-
-            // Whit two different feedrates for axis send command with the greater value
-            feedrate = (Math.abs(this.coords.x.dir) >= Math.abs(this.coords.y.dir)) ? this.coords.x.feedrate : this.coords.y.feedrate;
-            
-            */
-             // maxFeedRate : mm/min value for the max jog feed rate
-           // var maxFeedRate = 1000; 
-
-            // v : current jog feed rate in mm/sec, not mm/min. Less than or equal to max jog rate.
-        //     feedrate =  (Math.abs(feedrate) * maxFeedRate) / 255;
-            // var v =  f / 60;
-            
-            var feedrate = Math.abs(jx) >= Math.abs(jy) ? fx : fy;
-            
+            var feedrate = jxpos >= jypos ? fx : fy;
+            if (zPlane) feedrate = fy;
 
             if (moves != '') {
-
                 this.cmdCounter++;
-                var cmd = '$J='+ this.gCodeMove + moves + 'F' + feedrate + '\n';
-                
-               // if (this.plannerBuffer > 1){
-                    // direct send only if planner has free spaces
-                    this.sendCode(cmd);
-            //    }
-            //    else{
-             //       this.jogQueue.push(cmd);
-            //        this.doQueue();
-             //   }
+                this.sendCode('$J=G91' + moves + 'F' + feedrate + '\n');
             }
-            // }
+            
         },
         cancelJog: function() {
 
@@ -435,20 +302,6 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
             chilipeppr.publish("/com-chilipeppr-widget-serialport/send", code);
 
         },
-        invert: {
-            "xaxis-class": {
-                "normal": "glyphicon glyphicon-circle-arrow-right",
-                "invert": "glyphicon glyphicon-circle-arrow-left"
-            },
-            "yaxis-class": {
-                "normal": "glyphicon glyphicon-circle-arrow-up",
-                "invert": "glyphicon glyphicon-circle-arrow-down"
-            },
-            "xaxis": false,
-            "yaxis": false,
-            "zaxis": false
-        },
-
         btnSetup: function() {
             var that = this;
             $('#' + this.id + ' .hidebody').click(function(evt) {
@@ -598,12 +451,9 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     </div>
                 </div>
             </div> 
-            <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.41</span>
+            <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.42</span>
         </div>
         <div class="panel-body">
-            
-            Max F<input id="jog-max" value="1500">
-            DT <input id="jog-dt" value="0.04">
             <div class="settings well" style="display:none">
                 <b>Jog settings</b>
                 <div class="checkbox">
@@ -624,10 +474,19 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                     Invert Z direction
                   </label>
                 </div>
+                <div>
+                    <label for="jog-max" class="control-label">Max feed rate (mm/min)</label>
+                     <input type="text" class="form-control" id="jog-max" value="1500" style="width:100px">
+                </div>
+                <div>
+                    <label for="jog-dt" class="">DT</label >
+                    <input type="text" class="form-control" id="jog-dt" value="0.04" style="width:100px">
+                    <span style="font-size:10px">Estimated execution time of a single jog command in seconds</span>
+                </div>
             </div>
            
             <div class="bars-wrap">
-                <div class="x-bar-container">
+                <div class="x-bar-container container">
                     <div class="axis"> 
                         X 
                     </div>
@@ -642,7 +501,7 @@ cpdefine("inline:com-chilipeppr-grbl-joystick", ["chilipeppr_ready", /* other de
                         </div>
                     </div>
                 </div>
-                <div class="y-bar-container">
+                <div class="y-bar-container container">
                     <div class="axis"> 
                         Y 
                     </div>

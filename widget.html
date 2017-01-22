@@ -54,12 +54,9 @@
                     </div>
                 </div>
             </div> 
-            <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.41</span>
+            <span class="panel-title" data-toggle="popover">GRBL Joystick</span> <span style="font-size:9px;" class="fb-build">v1.1.42</span>
         </div>
         <div class="panel-body">
-            
-            Max F<input id="jog-max" value="1500">
-            DT <input id="jog-dt" value="0.04">
             <div class="settings well" style="display:none">
                 <b>Jog settings</b>
                 <div class="checkbox">
@@ -80,10 +77,19 @@
                     Invert Z direction
                   </label>
                 </div>
+                <div>
+                    <label for="jog-max" class="control-label">Max feed rate (mm/min)</label>
+                     <input type="text" class="form-control" id="jog-max" value="1500" style="width:100px">
+                </div>
+                <div>
+                    <label for="jog-dt" class="">DT</label >
+                    <input type="text" class="form-control" id="jog-dt" value="0.04" style="width:100px">
+                    <span style="font-size:10px">Estimated execution time of a single jog command in seconds</span>
+                </div>
             </div>
            
             <div class="bars-wrap">
-                <div class="x-bar-container">
+                <div class="x-bar-container container">
                     <div class="axis"> 
                         X 
                     </div>
@@ -98,7 +104,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="y-bar-container">
+                <div class="y-bar-container container">
                     <div class="axis"> 
                         Y 
                     </div>
